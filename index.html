@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drako HQ v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090f;--bg2:#111119;--bg3:#17171f;--bg4:#1e1e28;--bg5:#25252f;
+  --border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.11);--border3:rgba(255,255,255,0.18);
+  --text:#eeeef5;--text2:#9090aa;--text3:#55556a;
+  --purple:#7c6fff;--purple2:#a594ff;
+  --green:#1dba7e;--amber:#f0a030;--coral:#e05a3a;--blue:#3a8adf;--pink:#d4537e;
+  --r:12px;--rsm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;}
+.app{display:flex;height:100vh;}
+
+.sidebar{width:230px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.sb-top{padding:18px 16px 14px;border-bottom:1px solid var(--border);}
+.logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.logo span{color:var(--purple);}
+.logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:1px;}
+.av-row{display:flex;align-items:center;gap:9px;margin-top:12px;}
+.av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--purple2));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:11px;color:white;flex-shrink:0;}
+.av-name{font-size:13px;font-weight:500;}
+.av-role{font-size:10px;color:var(--text3);}
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto;}
+.sb-sec{margin-bottom:18px;}
+.sb-lbl{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;padding:0 8px;margin-bottom:3px;}
+.ni{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:var(--rsm);cursor:pointer;color:var(--text2);font-size:13px;transition:all 0.13s;margin-bottom:1px;border:1px solid transparent;}
+.ni:hover{background:var(--bg3);color:var(--text);}
+.ni.active{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+.ni-ic{width:18px;height:18px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;background:var(--bg5);}
+.ni.active .ni-ic{background:var(--purple);color:white;}
+.sb-bottom{padding:10px 8px;border-top:1px solid var(--border);}
+.clock-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:8px 10px;}
+.ct{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;}
+.cd{font-size:10px;color:var(--text3);margin-top:1px;}
+
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.topbar{height:50px;flex-shrink:0;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 22px;gap:14px;}
+.page-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;flex:1;}
+.tb-pills{display:flex;gap:8px;}
+.tb-pill{font-size:11px;padding:3px 10px;border-radius:99px;font-weight:500;}
+.content{flex:1;overflow-y:auto;padding:18px 22px;}
+
+.panel{display:none;animation:fi 0.18s ease;}
+.panel.active{display:block;}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;}
+.ch{padding:9px 15px;border-bottom:1px solid var(--border);font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.09em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;}
+.ch-btn{font-size:11px;padding:2px 8px;border-radius:var(--rsm);border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;}
+.ch-btn:hover{background:var(--bg4);color:var(--text);}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:9px;margin-bottom:12px;}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 12px;}
+.sl{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px;}
+.sv{font-size:20px;font-weight:700;font-family:'Syne',sans-serif;}
+
+.row{display:flex;align-items:center;gap:11px;padding:9px 15px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.12s;}
+.row:last-child{border-bottom:none;}
+.row:hover{background:var(--bg3);}
+.row.done .rn{text-decoration:line-through;color:var(--text3);}
+.row.done{opacity:0.55;}
+.ck{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all 0.13s;}
+.row.done .ck{background:var(--green);border-color:var(--green);color:white;}
+.rb{flex:1;}.rn{font-size:13px;color:var(--text);}
+.rs{font-size:11px;color:var(--text3);margin-top:1px;}
+.rt{font-size:11px;color:var(--text3);flex-shrink:0;}
+
+.tb{display:flex;gap:11px;padding:9px 15px;border-bottom:1px solid var(--border);align-items:flex-start;}
+.tb:last-child{border-bottom:none;}
+.tb-t{font-size:10px;color:var(--text3);min-width:56px;flex-shrink:0;padding-top:3px;}
+.tb-line{width:3px;border-radius:2px;align-self:stretch;min-height:14px;flex-shrink:0;}
+.tb-b{flex:1;}
+.tb-title{font-size:13px;color:var(--text);}
+.tb-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:99px;font-weight:600;margin-left:5px;vertical-align:middle;}
+.bp{background:rgba(124,111,255,0.15);color:var(--purple2);}
+.bg{background:rgba(29,186,126,0.15);color:var(--green);}
+.ba{background:rgba(240,160,48,0.15);color:var(--amber);}
+.bb{background:rgba(58,138,223,0.15);color:var(--blue);}
+.bc{background:rgba(224,90,58,0.15);color:var(--coral);}
+.bk{background:rgba(212,83,126,0.15);color:var(--pink);}
+
+.ir{display:flex;gap:11px;padding:10px 15px;border-bottom:1px solid var(--border);align-items:flex-start;}
+.ir:last-child{border-bottom:none;}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.ib{flex:1;}.it{font-size:13px;font-weight:500;color:var(--text);margin-bottom:2px;}
+.id{font-size:12px;color:var(--text2);line-height:1.55;}
+
+.gr{padding:9px 15px;border-bottom:1px solid var(--border);}
+.gr:last-child{border-bottom:none;}
+.gt{display:flex;justify-content:space-between;margin-bottom:5px;}
+.gn{font-size:13px;color:var(--text);}
+.gv{font-size:11px;color:var(--text3);}
+.bar{height:4px;background:var(--bg5);border-radius:99px;overflow:hidden;}
+.bf{height:100%;border-radius:99px;transition:width 0.5s ease;}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:700px){.g2{grid-template-columns:1fr;}}
+
+.abtn{display:block;width:100%;padding:9px 15px;margin-top:10px;background:transparent;border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text2);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;text-align:left;transition:all 0.13s;}
+.abtn:hover{background:var(--bg3);color:var(--text);border-color:var(--purple);}
+
+/* CALENDAR LAYOUT */
+.cal-wrap{display:flex;gap:14px;align-items:flex-start;}
+.cal-main{flex:1;min-width:0;}
+.cal-sidebar{width:240px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;}
+
+.cal-nav{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border);}
+.cal-month{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;letter-spacing:-0.3px;}
+.cal-nav-btn{width:30px;height:30px;border-radius:var(--rsm);border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
+.cal-nav-btn:hover{background:var(--bg4);color:var(--text);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;}
+.cal-dow{text-align:center;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.08em;padding:10px 4px;border-bottom:1px solid var(--border);background:var(--bg3);}
+.cal-cell{min-height:118px;padding:7px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s;overflow:hidden;user-select:none;}
+.cal-cell:nth-child(7n){border-right:none;}
+.cal-cell:hover{background:var(--bg3);}
+.cal-cell.other{opacity:0.25;pointer-events:none;}
+.cal-cell.today{background:rgba(124,111,255,0.07);}
+.cal-cell.holiday-day{background:rgba(224,90,58,0.04);}
+.cal-num{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:4px;line-height:1;}
+.cal-cell.today .cal-num{color:white;background:var(--purple);width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;}
+.cal-event{font-size:10px;padding:2px 6px;border-radius:3px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500;cursor:pointer;}
+.e-travel{background:rgba(58,138,223,0.22);color:#7ab8f5;}
+.e-family{background:rgba(240,160,48,0.22);color:#f5c060;}
+.e-friends{background:rgba(212,83,126,0.22);color:#e87aaa;}
+.e-work{background:rgba(124,111,255,0.22);color:#a594ff;}
+.e-fitness{background:rgba(29,186,126,0.22);color:#4dd4a0;}
+.e-reminder{background:rgba(224,90,58,0.22);color:#f0906a;}
+.e-holiday{background:rgba(224,90,58,0.15);color:#f0a080;font-style:italic;}
+.e-hustle{background:rgba(224,90,58,0.22);color:#f0906a;}
+.e-content{background:rgba(212,83,126,0.22);color:#e87aaa;}
+
+/* DOUBLE-CLICK MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:200;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border3);border-radius:var(--r);padding:20px;width:420px;max-width:95vw;animation:modalIn 0.2s ease;}
+@keyframes modalIn{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
+.modal-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;}
+.modal-date{font-size:11px;color:var(--text3);margin-bottom:16px;}
+.modal-field{margin-bottom:10px;}
+.modal-label{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.form-input{width:100%;padding:8px 11px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text);font-size:13px;font-family:'DM Sans',sans-serif;}
+.form-input:focus{outline:none;border-color:var(--purple);}
+.form-select{appearance:none;}
+.modal-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.modal-btns{display:flex;gap:8px;margin-top:16px;}
+.btn-save{flex:1;padding:9px;background:var(--purple);border:none;border-radius:var(--rsm);color:white;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;font-weight:600;}
+.btn-save:hover{background:var(--purple2);}
+.btn-cancel{padding:9px 16px;background:transparent;border:1px solid var(--border2);border-radius:var(--rsm);color:var(--text2);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;}
+.btn-cancel:hover{background:var(--bg4);}
+
+/* REMINDERS WIDGET */
+.reminder-widget{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;}
+.rw-head{padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.rw-title{font-size:11px;font-weight:600;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;}
+.rw-badge{font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(124,111,255,0.15);color:var(--purple2);font-weight:600;}
+.rw-item{padding:9px 14px;border-bottom:1px solid var(--border);transition:background 0.1s;}
+.rw-item:last-child{border-bottom:none;}
+.rw-item:hover{background:var(--bg3);}
+.rw-top{display:flex;align-items:center;gap:7px;margin-bottom:2px;}
+.rw-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.rw-name{font-size:12px;font-weight:500;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rw-del{font-size:10px;color:var(--text3);cursor:pointer;padding:1px 4px;border-radius:3px;flex-shrink:0;}
+.rw-del:hover{color:var(--coral);}
+.rw-meta{font-size:10px;color:var(--text3);padding-left:14px;}
+.rw-days{font-size:10px;font-weight:600;padding:1px 6px;border-radius:99px;margin-left:4px;}
+.days-soon{background:rgba(224,90,58,0.15);color:var(--coral);}
+.days-near{background:rgba(240,160,48,0.15);color:var(--amber);}
+.days-far{background:rgba(29,186,126,0.15);color:var(--green);}
+.days-today{background:rgba(124,111,255,0.2);color:var(--purple2);}
+
+/* LEGEND */
+.legend-row{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;}
+
+.event-list{padding:8px 14px;}
+.ev-item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid var(--border);}
+.ev-item:last-child{border-bottom:none;}
+.ev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.ev-body{flex:1;}
+.ev-name{font-size:12px;font-weight:500;color:var(--text);}
+.ev-meta{font-size:10px;color:var(--text3);margin-top:1px;}
+.ev-reminder{font-size:9px;padding:1px 5px;border-radius:99px;background:rgba(224,90,58,0.15);color:var(--coral);margin-left:5px;}
+.ev-del{font-size:10px;color:var(--text3);cursor:pointer;padding:2px 5px;border-radius:var(--rsm);}
+.ev-del:hover{background:rgba(224,90,58,0.15);color:var(--coral);}
+
+/* BONZO COUNTERS */
+.counter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;padding:12px 15px;}
+.counter-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;text-align:center;}
+.cc-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;}
+.cc-val{font-size:28px;font-weight:800;font-family:'Syne',sans-serif;margin-bottom:8px;}
+.cc-target{font-size:10px;color:var(--text3);margin-bottom:8px;}
+.cc-btns{display:flex;gap:6px;justify-content:center;}
+.cc-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border2);background:transparent;color:var(--text2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.cc-btn:hover{background:var(--bg4);color:var(--text);}
+
+/* BROADCAST TEMPLATE */
+.broadcast-box{padding:12px 15px;}
+.bcast-template{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rsm);padding:12px;font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap;margin-bottom:10px;font-style:italic;}
+.bcast-date{font-size:10px;color:var(--text3);margin-bottom:6px;}
+
+/* REMINDER TOAST */
+.toast{position:fixed;top:16px;right:16px;background:var(--bg2);border:1px solid var(--border3);border-radius:var(--r);padding:12px 16px;max-width:280px;z-index:999;animation:slideIn 0.3s ease;box-shadow:0 4px 20px rgba(0,0,0,0.4);}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.toast-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
+.toast-body{font-size:12px;color:var(--text2);}
+.toast-close{position:absolute;top:8px;right:10px;cursor:pointer;color:var(--text3);font-size:14px;}
+
+.streak{display:flex;gap:5px;margin-top:5px;}
+.sd{width:15px;height:15px;border-radius:50%;}
+.s-on{background:var(--green);}.s-now{background:var(--purple);}.s-off{background:var(--bg5);border:1px solid var(--border2);}
+
+.wo-day{display:flex;align-items:center;gap:12px;padding:9px 15px;border-bottom:1px solid var(--border);}
+.wo-day:last-child{border-bottom:none;}
+.wo-label{font-size:13px;font-weight:500;min-width:80px;}
+.wo-detail{flex:1;font-size:12px;color:var(--text2);}
+.wo-badge{font-size:10px;padding:2px 8px;border-radius:99px;font-weight:600;cursor:pointer;}
+
+.platform-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;padding:12px 15px;}
+.pf{background:var(--bg3);border:1px solid var(--border);border-radius:var(--rsm);padding:10px 12px;text-align:center;}
+.pf-dot{width:8px;height:8px;border-radius:50%;margin:0 auto 6px;}
+.pf-name{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.pf-sub{font-size:10px;color:var(--text3);}
+
+.fed-box{background:var(--bg3);border:1px solid var(--border2);border-radius:var(--rsm);padding:12px 15px;margin-bottom:10px;}
+.fed-date{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.fed-headline{font-size:14px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.fed-body{font-size:12px;color:var(--text2);line-height:1.6;}
+.fed-signal{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;margin-top:8px;}
+
+/* FED SUB-TABS */
+.fed-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+
+/* LIVE BRIEFING PANEL */
+.briefing-panel{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:14px;overflow:hidden;}
+.briefing-topbar{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);}
+.briefing-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+.briefing-badge{font-size:10px;padding:2px 8px;border-radius:99px;background:rgba(29,186,126,0.15);color:var(--green);font-weight:600;}
+.briefing-badge.loading{background:rgba(124,111,255,0.15);color:var(--purple2);animation:pulse 1s infinite;}
+.briefing-badge.error{background:rgba(224,90,58,0.15);color:var(--coral);}
+.briefing-meta{font-size:10px;color:var(--text3);}
+.briefing-topics{display:flex;gap:6px;flex-wrap:wrap;padding:10px 16px;border-bottom:1px solid var(--border);background:var(--bg3);}
+.topic-btn{font-size:11px;padding:4px 10px;border-radius:99px;border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.13s;}
+.topic-btn:hover,.topic-btn.active{background:var(--purple);color:white;border-color:var(--purple);}
+.briefing-output{padding:14px 16px;min-height:60px;font-size:13px;color:var(--text2);line-height:1.7;}
+.briefing-output.empty{color:var(--text3);font-style:italic;}
+.briefing-output h2{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--text);margin:14px 0 5px;display:flex;align-items:center;gap:6px;}
+.briefing-output h2:first-child{margin-top:0;}
+.briefing-output p{margin-bottom:8px;font-size:12px;line-height:1.7;}
+.briefing-output strong{color:var(--text);}
+.briefing-actions{display:flex;align-items:center;gap:8px;padding:10px 16px;border-top:1px solid var(--border);}
+.get-briefing-btn{display:flex;align-items:center;gap:7px;padding:8px 16px;background:var(--purple);border:none;border-radius:var(--rsm);color:white;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.get-briefing-btn:hover{background:var(--purple2);}
+.get-briefing-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.get-briefing-btn .spin{display:inline-block;animation:spin 1s linear infinite;}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.briefing-cost{font-size:10px;color:var(--text3);}
+.copy-btn{margin-left:auto;font-size:11px;padding:5px 10px;border-radius:var(--rsm);border:1px solid var(--border2);background:transparent;color:var(--text2);cursor:pointer;}
+.copy-btn:hover{background:var(--bg3);color:var(--text);}
+.fed-tab{padding:5px 12px;font-size:12px;border-radius:var(--rsm);border:1px solid var(--border2);cursor:pointer;background:transparent;color:var(--text2);font-family:'DM Sans',sans-serif;transition:all 0.13s;}
+.fed-tab:hover{background:var(--bg3);color:var(--text);}
+.fed-tab.active{background:var(--bg4);color:var(--text);border-color:var(--border3);}
+.fed-section{display:none;}
+.fed-section.active{display:block;}
+
+/* CONVICTION BADGES */
+.conv-high{font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(29,186,126,0.15);color:var(--green);font-weight:600;margin-left:5px;vertical-align:middle;}
+.conv-med{font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(240,160,48,0.15);color:var(--amber);font-weight:600;margin-left:5px;vertical-align:middle;}
+.conv-low{font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(85,85,106,0.2);color:var(--text3);font-weight:600;margin-left:5px;vertical-align:middle;}
+.conv-warn{font-size:10px;padding:1px 7px;border-radius:99px;background:rgba(224,90,58,0.15);color:var(--coral);font-weight:600;margin-left:5px;vertical-align:middle;}
+
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bg5);border-radius:2px;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+.live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;margin-right:5px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="sidebar">
+  <div class="sb-top">
+    <div class="logo">Drako<span>.</span>HQ</div>
+    <div class="logo-sub">v3 — Life in balance</div>
+    <div class="av-row">
+      <div class="av">DR</div>
+      <div><div class="av-name">Mark (Drako)</div><div class="av-role">LO · Builder · Creator</div></div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <div class="sb-sec">
+      <div class="sb-lbl">Daily</div>
+      <div class="ni active" onclick="nav('calendar',this)"><div class="ni-ic">📅</div>Calendar</div>
+      <div class="ni" onclick="nav('schedule',this)"><div class="ni-ic">◷</div>Schedule</div>
+      <div class="ni" onclick="nav('routine',this)"><div class="ni-ic">↑</div>Morning routine</div>
+      <div class="ni" onclick="nav('week',this)"><div class="ni-ic">◫</div>Week view</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Goals</div>
+      <div class="ni" onclick="nav('goals',this)"><div class="ni-ic">◎</div>Goals tracker</div>
+      <div class="ni" onclick="nav('fitness',this)"><div class="ni-ic">◈</div>Fitness</div>
+      <div class="ni" onclick="nav('life',this)"><div class="ni-ic">♡</div>Life balance</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Hustle</div>
+      <div class="ni" onclick="nav('bonzo',this)"><div class="ni-ic">✉</div>Bonzo</div>
+      <div class="ni" onclick="nav('sidehustle',this)"><div class="ni-ic">⚡</div>Side hustle</div>
+      <div class="ni" onclick="nav('content',this)"><div class="ni-ic">▶</div>Content</div>
+    </div>
+    <div class="sb-sec">
+      <div class="sb-lbl">Wealth</div>
+      <div class="ni" onclick="nav('fed',this)"><div class="ni-ic">$</div>Fed + markets</div>
+      <div class="ni" onclick="nav('wealth',this)"><div class="ni-ic">◆</div>Wealth plan</div>
+      <div class="ni" onclick="nav('tax',this)"><div class="ni-ic">§</div>Tax strategy</div>
+    </div>
+  </div>
+  <div class="sb-bottom">
+    <div class="clock-box">
+      <div class="ct" id="clock">--:-- --</div>
+      <div class="cd" id="clock-date">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title">Calendar</div>
+    <div class="tb-pills">
+      <div class="tb-pill" style="background:rgba(29,186,126,0.12);color:var(--green)"><span class="live"></span><span id="top-done">0/10</span> done today</div>
+      <div class="tb-pill" style="background:rgba(240,160,48,0.12);color:var(--amber)" id="next-event-pill">No upcoming events</div>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- CALENDAR -->
+    <div id="p-calendar" class="panel active">
+      <div class="cal-wrap">
+
+        <!-- MAIN CALENDAR -->
+        <div class="cal-main">
+          <div class="card">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="changeMonth(-1)">‹</button>
+              <div class="cal-month" id="cal-month-label"></div>
+              <button class="cal-nav-btn" onclick="changeMonth(1)">›</button>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+          </div>
+          <div class="card">
+            <div class="ch">Legend &nbsp;<span style="font-size:10px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">Double-click any date to add an event</span></div>
+            <div class="legend-row">
+              <span class="cal-event e-travel">✈ Travel</span>
+              <span class="cal-event e-family">★ Family</span>
+              <span class="cal-event e-friends">♦ Friends</span>
+              <span class="cal-event e-work">◈ Work</span>
+              <span class="cal-event e-fitness">● Fitness</span>
+              <span class="cal-event e-hustle">⚡ Side hustle</span>
+              <span class="cal-event e-content">▶ Content</span>
+              <span class="cal-event e-reminder">! Reminder</span>
+              <span class="cal-event e-holiday">✦ Holiday</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR -->
+        <div class="cal-sidebar">
+
+          <!-- REMINDERS WIDGET -->
+          <div class="reminder-widget">
+            <div class="rw-head">
+              <span class="rw-title">Upcoming — next 14 days</span>
+              <span class="rw-badge" id="rw-count">0</span>
+            </div>
+            <div id="reminders-list"><div style="padding:12px 14px;font-size:11px;color:var(--text3);">No events in the next 14 days.</div></div>
+          </div>
+
+          <!-- ALL EVENTS -->
+          <div class="reminder-widget">
+            <div class="rw-head">
+              <span class="rw-title">All upcoming events</span>
+            </div>
+            <div class="event-list" id="event-list"></div>
+          </div>
+
+          <!-- TRAVEL -->
+          <div class="reminder-widget">
+            <div class="rw-head">
+              <span class="rw-title">Travel plans</span>
+            </div>
+            <div class="event-list" id="travel-list"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD EVENT MODAL -->
+    <div class="modal-overlay" id="event-modal" onclick="closeModalOutside(event)">
+      <div class="modal">
+        <div class="modal-title">Add event</div>
+        <div class="modal-date" id="modal-date-label"></div>
+
+        <div class="modal-field">
+          <div class="modal-label">Event name</div>
+          <input class="form-input" id="ev-name" placeholder="e.g. Trip to Miami" />
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-field">
+            <div class="modal-label">From date</div>
+            <input class="form-input" id="ev-date-from" type="date" onchange="syncToDate()" />
+          </div>
+          <div class="modal-field">
+            <div class="modal-label">To date <span style="color:var(--text3);font-weight:400;">(leave same for single day)</span></div>
+            <input class="form-input" id="ev-date-to" type="date" />
+          </div>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-field">
+            <div class="modal-label">Start time <span style="color:var(--text3);font-weight:400;">(optional)</span></div>
+            <div style="display:flex;gap:6px;">
+              <select class="form-input form-select" id="ev-hour" style="flex:1;">
+                <option value="">--</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+              <select class="form-input form-select" id="ev-min" style="flex:1;">
+                <option value="00">:00</option>
+                <option value="15">:15</option>
+                <option value="30">:30</option>
+                <option value="45">:45</option>
+              </select>
+              <select class="form-input form-select" id="ev-ampm" style="flex:1;">
+                <option>AM</option>
+                <option>PM</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-field">
+            <div class="modal-label">End time <span style="color:var(--text3);font-weight:400;">(optional)</span></div>
+            <div style="display:flex;gap:6px;">
+              <select class="form-input form-select" id="ev-hour-end" style="flex:1;">
+                <option value="">--</option>
+                <option>1</option><option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+                <option>9</option><option>10</option><option>11</option><option>12</option>
+              </select>
+              <select class="form-input form-select" id="ev-min-end" style="flex:1;">
+                <option value="00">:00</option>
+                <option value="15">:15</option>
+                <option value="30">:30</option>
+                <option value="45">:45</option>
+              </select>
+              <select class="form-input form-select" id="ev-ampm-end" style="flex:1;">
+                <option>AM</option>
+                <option selected>PM</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-row">
+          <div class="modal-field">
+            <div class="modal-label">Category</div>
+            <select class="form-input form-select" id="ev-type">
+              <option value="travel">✈ Travel</option>
+              <option value="family">★ Family / nephews</option>
+              <option value="friends">♦ Friends</option>
+              <option value="work">◈ Work event</option>
+              <option value="fitness">● Fitness</option>
+              <option value="reminder">! Reminder</option>
+            </select>
+          </div>
+          <div class="modal-field">
+            <div class="modal-label">Remind me</div>
+            <select class="form-input form-select" id="ev-remind">
+              <option value="1">1 day before</option>
+              <option value="2" selected>2 days before</option>
+              <option value="3">3 days before</option>
+              <option value="7">1 week before</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-field">
+          <div class="modal-label">Notes</div>
+          <input class="form-input" id="ev-notes" placeholder="Optional details..." />
+        </div>
+
+        <div class="modal-btns">
+          <button class="btn-save" onclick="saveEvent()">Save event</button>
+          <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div id="p-schedule" class="panel">
+      <div class="stats">
+        <div class="stat"><div class="sl">Block 1</div><div class="sv" style="color:var(--purple)">8:30–11</div></div>
+        <div class="stat"><div class="sl">Reset break</div><div class="sv" style="color:var(--amber)">11–12</div></div>
+        <div class="stat"><div class="sl">Block 2</div><div class="sv" style="color:var(--purple)">12–5 PM</div></div>
+        <div class="stat"><div class="sl">Total focus</div><div class="sv" style="color:var(--green)">6.5 hrs</div></div>
+      </div>
+      <div class="card">
+        <div class="ch">Morning — routine + launch</div>
+        <div class="tb"><div class="tb-t">7:30 AM</div><div class="tb-line" style="background:var(--green)"></div><div class="tb-b"><div class="tb-title">Morning routine <span class="badge bg">10 habits</span></div><div class="tb-sub">Body + mind + work prep. Done before 8:30.</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ch">Work block 1 — mortgage focus</div>
+        <div class="tb"><div class="tb-t">8:30 AM</div><div class="tb-line" style="background:var(--purple)"></div><div class="tb-b"><div class="tb-title">Lead outreach + calls <span class="badge bp">target: 15 calls</span></div><div class="tb-sub">First 15 of your 30 daily calls. Move fast. Use Bonzo triggers. High energy block.</div></div></div>
+        <div class="tb"><div class="tb-t">9:30 AM</div><div class="tb-line" style="background:var(--purple)"></div><div class="tb-b"><div class="tb-title">Applications + pipeline <span class="badge bp">mortgage</span></div><div class="tb-sub">Process active files, follow up on pending apps, respond to emails.</div></div></div>
+        <div class="tb"><div class="tb-t">10:30 AM</div><div class="tb-line" style="background:var(--coral)"></div><div class="tb-b"><div class="tb-title">Side hustle block <span class="badge bc">hustle</span></div><div class="tb-sub">AI, web design, or content — one focused task only.</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ch">Reset hour — 11:00 to 12:00 PM</div>
+        <div class="tb"><div class="tb-t">11:00 AM</div><div class="tb-line" style="background:var(--amber)"></div><div class="tb-b"><div class="tb-title">Step away — mentality reset <span class="badge ba">non-negotiable</span></div><div class="tb-sub">Eat lunch. Walk. Decompress. This is not wasted time — it's how you come back sharp.</div></div></div>
+        <div class="tb"><div class="tb-t">11:30 AM</div><div class="tb-line" style="background:var(--amber)"></div><div class="tb-b"><div class="tb-title">Mindset check-in</div><div class="tb-sub">Ask yourself: Am I gripping the bat too tight? Reset your energy before block 2.</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ch">Work block 2 — finish strong</div>
+        <div class="tb"><div class="tb-t">12:00 PM</div><div class="tb-line" style="background:var(--purple)"></div><div class="tb-b"><div class="tb-title">Lead outreach — second wave <span class="badge bp">target: 15 more calls</span></div><div class="tb-sub">Complete your 30-call daily goal. Afternoon leads often pick up more.</div></div></div>
+        <div class="tb"><div class="tb-t">1:30 PM</div><div class="tb-line" style="background:var(--purple)"></div><div class="tb-b"><div class="tb-title">Appointments + consultations <span class="badge bp">mortgage</span></div><div class="tb-sub">Pre-approvals, buyer consultations, realtor calls.</div></div></div>
+        <div class="tb"><div class="tb-t">3:30 PM</div><div class="tb-line" style="background:var(--blue)"></div><div class="tb-b"><div class="tb-title">Market + broadcast prep <span class="badge bb">weekly</span></div><div class="tb-sub">Write and schedule your weekly Bonzo market broadcast. Takes 20 min.</div></div></div>
+        <div class="tb"><div class="tb-t">4:30 PM</div><div class="tb-line" style="background:var(--green)"></div><div class="tb-b"><div class="tb-title">Day wrap + tomorrow's top 3</div><div class="tb-sub">Log wins, review pipeline, set tomorrow's priority leads. Done by 5 PM.</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ch">Evening — life and reflection</div>
+        <div class="tb"><div class="tb-t">5:00 PM</div><div class="tb-line" style="background:var(--amber)"></div><div class="tb-b"><div class="tb-title">Laptop closed — life begins <span class="badge ba">protected</span></div><div class="tb-sub">Nephews, family, gym, friends, outdoors. This is why you work.</div></div></div>
+        <div class="tb"><div class="tb-t">8:30 PM</div><div class="tb-line" style="background:var(--green)"></div><div class="tb-b"><div class="tb-title">Evening review — 5 min</div><div class="tb-sub">Quick log, phone across the room, done.</div></div></div>
+      </div>
+    </div>
+
+    <!-- MORNING ROUTINE -->
+    <div id="p-routine" class="panel">
+      <div class="stats">
+        <div class="stat"><div class="sl">Done today</div><div class="sv" style="color:var(--green)" id="r-done">0/10</div></div>
+        <div class="stat"><div class="sl">Streak</div><div class="sv" style="color:var(--purple)">3 days</div></div>
+        <div class="stat"><div class="sl">This week</div><div><div class="streak"><div class="sd s-on"></div><div class="sd s-on"></div><div class="sd s-on"></div><div class="sd s-now"></div><div class="sd s-off"></div><div class="sd s-off"></div><div class="sd s-off"></div></div></div></div>
+      </div>
+      <div class="card" id="routine-card"></div>
+      <button class="abtn" onclick="resetRoutine()">↺ Reset for tomorrow</button>
+    </div>
+
+    <!-- WEEK VIEW -->
+    <div id="p-week" class="panel">
+      <div class="stats">
+        <div class="stat"><div class="sl">Work days</div><div class="sv" style="color:var(--purple)">M–F</div></div>
+        <div class="stat"><div class="sl">Workout</div><div class="sv" style="color:var(--green)">4x/wk</div></div>
+        <div class="stat"><div class="sl">Nephews</div><div class="sv" style="color:var(--amber)">1–2x</div></div>
+        <div class="stat"><div class="sl">Friends</div><div class="sv" style="color:var(--pink)">Fri/2wks</div></div>
+        <div class="stat"><div class="sl">Side hustle</div><div class="sv" style="color:var(--coral)">4–5x</div></div>
+      </div>
+      <div class="card"><div class="ch">This week</div><div class="cal-grid" style="grid-template-columns:repeat(7,1fr);">
+        <div class="cal-dow">MON</div><div class="cal-dow">TUE</div><div class="cal-dow">WED</div><div class="cal-dow">THU</div><div class="cal-dow">FRI</div><div class="cal-dow">SAT</div><div class="cal-dow">SUN</div>
+        <div id="week-cells" style="display:contents;"></div>
+      </div></div>
+      <div class="g2">
+        <div class="card"><div class="ch">Life balance</div>
+          <div class="gr"><div class="gt"><span class="gn">Mortgage work</span><span class="gv">~25 hrs</span></div><div class="bar"><div class="bf" style="width:70%;background:var(--purple)"></div></div></div>
+          <div class="gr"><div class="gt"><span class="gn">Side hustle</span><span class="gv">~10 hrs</span></div><div class="bar"><div class="bf" style="width:45%;background:var(--coral)"></div></div></div>
+          <div class="gr"><div class="gt"><span class="gn">Fitness</span><span class="gv">4 sessions</span></div><div class="bar"><div class="bf" style="width:80%;background:var(--green)"></div></div></div>
+          <div class="gr"><div class="gt"><span class="gn">Family + nephews</span><span class="gv">2 days</span></div><div class="bar"><div class="bf" style="width:70%;background:var(--amber)"></div></div></div>
+          <div class="gr"><div class="gt"><span class="gn">Friends</span><span class="gv">bi-weekly</span></div><div class="bar"><div class="bf" style="width:50%;background:var(--pink)"></div></div></div>
+        </div>
+        <div class="card"><div class="ch">This week</div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Mon + Wed + Fri</div><div class="id">Workout days — before or after work block</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Tue or Wed evening</div><div class="id">Nephews time — blocked, nothing overrides</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Mon–Fri 10:30 AM</div><div class="id">Side hustle block during work day</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--pink)"></div><div class="ib"><div class="it">Friday (every 2 weeks)</div><div class="id">Friends night — fully off, fully present</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOALS -->
+    <div id="p-goals" class="panel">
+      <div class="card"><div class="ch">Big life goals</div>
+        <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Work smart, live free</div><div class="id">6.5-hour focused workday with a reset break built in. Done by 5 PM, life is yours.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Build lasting wealth</div><div class="id">Multiple income streams + LLC + trust structure protecting everything you build.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Brand that earns while you sleep</div><div class="id">AI-powered web design + content creation generating passive income.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Be present for the people you love</div><div class="id">Nephews, family, friends — protected time every week, no compromise.</div></div></div>
+      </div>
+      <div class="card"><div class="ch">Weekly targets</div><div id="goals-list"></div></div>
+    </div>
+
+    <!-- FITNESS -->
+    <div id="p-fitness" class="panel">
+      <div class="stats">
+        <div class="stat"><div class="sl">Target/week</div><div class="sv" style="color:var(--green)">4x</div></div>
+        <div class="stat"><div class="sl">This week</div><div class="sv" style="color:var(--green)" id="wo-done">0/4</div></div>
+        <div class="stat"><div class="sl">Streak</div><div class="sv" style="color:var(--purple)">2 wks</div></div>
+      </div>
+      <div class="card"><div class="ch">Weekly split</div><div id="wo-list"></div></div>
+      <div class="card"><div class="ch">Why this is non-negotiable</div>
+        <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Your body is your business</div><div class="id">1099 = no sick days. Energy and clarity are your product. Protect them.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Health + wellness is your content niche</div><div class="id">Your fitness journey IS your content. Document it. You're already living the brand.</div></div></div>
+      </div>
+    </div>
+
+    <!-- LIFE BALANCE -->
+    <div id="p-life" class="panel">
+      <div class="g2">
+        <div class="card"><div class="ch">People who matter</div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Nephews — 1 to 2 days/week</div><div class="id">Tuesday or Wednesday evening + Saturday afternoon. They grow up fast.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--pink)"></div><div class="ib"><div class="it">Friends — every other Friday</div><div class="id">Bi-weekly Friday. Fully off, fully present. No work talk.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Family — woven in daily</div><div class="id">Evenings after 5 PM are yours. Be available. Be present.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Yourself</div><div class="id">Morning routine, workouts, stillness. You can't pour from an empty cup.</div></div></div>
+        </div>
+        <div class="card"><div class="ch">The life equation</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">The reset hour (11–12) is the secret</div><div class="id">Most people don't stop when they should. You stepping away is how you come back and close deals in block 2.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">5 PM hard stop</div><div class="id">The boundary that makes everything else possible. Guard it.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Wealth buys time, not things</div><div class="id">You're building this for freedom and the people you love. Never lose sight of that.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BONZO -->
+    <div id="p-bonzo" class="panel">
+      <div class="card"><div class="ch">Daily call tracker</div>
+        <div class="counter-grid">
+          <div class="counter-card">
+            <div class="cc-label">Calls made</div>
+            <div class="cc-val" id="calls-val" style="color:var(--purple)">0</div>
+            <div class="cc-target">Goal: 30 today</div>
+            <div class="cc-btns">
+              <button class="cc-btn" onclick="adj('calls',-1)">−</button>
+              <button class="cc-btn" onclick="adj('calls',1)">+</button>
+            </div>
+          </div>
+          <div class="counter-card">
+            <div class="cc-label">Appointments booked</div>
+            <div class="cc-val" id="appts-val" style="color:var(--green)">0</div>
+            <div class="cc-target">Goal: 3 today</div>
+            <div class="cc-btns">
+              <button class="cc-btn" onclick="adj('appts',-1)">−</button>
+              <button class="cc-btn" onclick="adj('appts',1)">+</button>
+            </div>
+          </div>
+          <div class="counter-card">
+            <div class="cc-label">Follow-ups sent</div>
+            <div class="cc-val" id="followups-val" style="color:var(--blue)">0</div>
+            <div class="cc-target">Goal: 20 today</div>
+            <div class="cc-btns">
+              <button class="cc-btn" onclick="adj('followups',-1)">−</button>
+              <button class="cc-btn" onclick="adj('followups',1)">+</button>
+            </div>
+          </div>
+          <div class="counter-card">
+            <div class="cc-label">Broadcast sent</div>
+            <div class="cc-val" id="broadcast-val" style="color:var(--amber)">0</div>
+            <div class="cc-target">Goal: 1 this week</div>
+            <div class="cc-btns">
+              <button class="cc-btn" onclick="adj('broadcast',-1)">−</button>
+              <button class="cc-btn" onclick="adj('broadcast',1)">+</button>
+            </div>
+          </div>
+        </div>
+        <div style="padding:0 15px 12px;">
+          <div class="gr"><div class="gt"><span class="gn">Daily calls (30 goal)</span><span class="gv" id="calls-pct">0%</span></div><div class="bar"><div class="bf" id="calls-bar" style="width:0%;background:var(--purple)"></div></div></div>
+          <div class="gr"><div class="gt"><span class="gn">Appointments (3 goal)</span><span class="gv" id="appts-pct">0%</span></div><div class="bar"><div class="bf" id="appts-bar" style="width:0%;background:var(--green)"></div></div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch">Weekly market broadcast template</div>
+        <div class="broadcast-box">
+          <div class="bcast-date">Ready to send — customize and fire in Bonzo</div>
+          <div class="bcast-template" id="broadcast-template"></div>
+          <button class="abtn" style="margin-top:0;" onclick="refreshBroadcast()">↺ Refresh template</button>
+        </div>
+      </div>
+      <div class="card"><div class="ch">Conversion rules</div>
+        <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">5-minute rule</div><div class="id">Text within 5 min of inquiry = 3× higher response. Speed beats every other LO.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Under 30 words, first text</div><div class="id">First name + one curiosity question. Never a pitch. Sound human.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Video texts = 40% more replies</div><div class="id">20 seconds, you on camera, relaxed tone. Builds trust instantly.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Don't over-explain (your pattern)</div><div class="id">One message. One question. One ask. Let them respond before you elaborate.</div></div></div>
+      </div>
+      <div class="card"><div class="ch">On syncing Claude with Bonzo</div>
+        <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">What's possible</div><div class="id">Claude can write all your Bonzo scripts, sequences, and broadcast templates here. You copy + paste into Bonzo. No integration needed — fast and private.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Full automation (future)</div><div class="id">A developer could build a secure middleware connecting Bonzo's API to Claude's API. Claude auto-drafts responses, you approve before send. Keeps client data safe.</div></div></div>
+        <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Your data here</div><div class="id">Never paste client SSNs, loan numbers, or NPI data here. Keep strategy and scripts here — keep sensitive data in Bonzo and your LOS only.</div></div></div>
+      </div>
+    </div>
+
+    <!-- SIDE HUSTLE -->
+    <div id="p-sidehustle" class="panel">
+      <div class="g2">
+        <div class="card"><div class="ch">Pillar 1 — AI extensions + Claude</div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">What you're building</div><div class="id">Custom Claude plugins, agents, and workflows that handle your day-to-day — lead research, content writing, market briefs, Bonzo scripts.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Week 1–4</div><div class="id">Claude API basics, prompt chaining, your first Bonzo automation agent.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Week 5–12</div><div class="id">Build → automate your own workflow → package → sell to other LOs at $500–$2K.</div></div></div>
+        </div>
+        <div class="card"><div class="ch">Pillar 2 — web design, local biz</div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">The opportunity in Sterling Heights</div><div class="id">80% of small businesses near you have outdated or no websites. You + AI tools can fix that in hours per client.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Pricing</div><div class="id">$500–$1,500 landing page. $100–$300/month maintenance. 10 retainers = $2K/month.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div id="p-content" class="panel">
+      <div class="card"><div class="ch">Platforms</div>
+        <div class="platform-grid">
+          <div class="pf"><div class="pf-dot" style="background:#E1306C;"></div><div class="pf-name">Instagram</div><div class="pf-sub">Reels · health + comedy</div></div>
+          <div class="pf"><div class="pf-dot" style="background:#69C9D0;"></div><div class="pf-name">TikTok</div><div class="pf-sub">Shorts · trending</div></div>
+          <div class="pf"><div class="pf-dot" style="background:#FF0000;"></div><div class="pf-name">YouTube Shorts</div><div class="pf-sub">Repurpose · monetize</div></div>
+          <div class="pf"><div class="pf-dot" style="background:#1877F2;"></div><div class="pf-name">Facebook</div><div class="pf-sub">Reels · bonus reach</div></div>
+        </div>
+      </div>
+      <div class="g2">
+        <div class="card"><div class="ch">Content pillars</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Health + wellness</div><div class="id">Your workouts, nutrition, mindset. Document, don't perform.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Comedy + personality</div><div class="id">Relatable humor. Immigrant hustle story. Middle Eastern family life. Your personality IS the content.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Behind the hustle</div><div class="id">Building AI tools, web design, 1099 life. Massive hungry audience.</div></div></div>
+        </div>
+        <div class="card"><div class="ch">Content system</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Film once → 4 platforms</div><div class="id">Same clip on TikTok, Instagram, YouTube Shorts, Facebook. Multiply reach, same effort.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">CapCut + Claude</div><div class="id">CapCut auto-captions. Claude writes hooks and scripts. You just film.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Monetization path</div><div class="id">Creator funds + brand deals + UGC contracts. First check at ~5K followers.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FED -->
+    <div id="p-fed" class="panel">
+
+      <!-- LIVE TICKER ROW -->
+      <div class="stats">
+        <div class="stat"><div class="sl">Gold (XAU)</div><div class="sv" style="color:var(--amber)">~$4,520</div></div>
+        <div class="stat"><div class="sl">30-yr mortgage</div><div class="sv" style="color:var(--coral)">6.20%</div></div>
+        <div class="stat"><div class="sl">Fed funds rate</div><div class="sv" style="color:var(--amber)">3.50–3.75%</div></div>
+        <div class="stat"><div class="sl">CPI (Mar 2026)</div><div class="sv" style="color:var(--coral)">3.3%</div></div>
+        <div class="stat"><div class="sl">S&P 500</div><div class="sv" style="color:var(--green)">~6,840</div></div>
+        <div class="stat"><div class="sl">Oil (Brent)</div><div class="sv" style="color:var(--coral)">~$105/bl</div></div>
+      </div>
+
+      <!-- ALERT BANNER -->
+      <div style="background:rgba(224,90,58,0.1);border:1px solid rgba(224,90,58,0.3);border-radius:var(--rsm);padding:10px 15px;margin-bottom:8px;display:flex;align-items:center;gap:10px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--coral);animation:pulse 1.5s infinite;flex-shrink:0;"></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5;">
+          <strong style="color:var(--coral);">War + debt crisis + dollar system fracturing.</strong> US-Iran conflict closed Hormuz. UAE exited OPEC May 1. Petrodollar expired 2024. $39T on-balance sheet debt, $250T off-balance sheet. Central banks buying gold at fastest pace in 50 years.
+        </div>
+      </div>
+      <div style="background:rgba(124,111,255,0.1);border:1px solid rgba(124,111,255,0.35);border-radius:var(--rsm);padding:10px 15px;margin-bottom:12px;display:flex;align-items:center;gap:10px;">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--purple);animation:pulse 1s infinite;flex-shrink:0;"></div>
+        <div style="font-size:12px;color:var(--text2);line-height:1.5;">
+          <strong style="color:var(--purple2);">⚠ May 15, 2026 — Fed Chair transition + debt reset strategy announced.</strong> New leadership. New plan to "shrink the debt crisis." Multiple analysts warn this cannot happen without a significant economic reset felt in ordinary people's wallets. Watch closely.
+        </div>
+      </div>
+
+      <!-- LIVE AI BRIEFING PANEL -->
+      <div class="briefing-panel">
+        <div class="briefing-topbar">
+          <div class="briefing-title">
+            ⚡ Live AI Market Briefing
+            <span class="briefing-badge" id="briefing-badge">Ready</span>
+          </div>
+          <div class="briefing-meta" id="briefing-meta">Powered by Claude + live web search · ~$0.01/click</div>
+        </div>
+        <div class="briefing-topics">
+          <button class="topic-btn active" onclick="setTopic('general',this)">Full briefing</button>
+          <button class="topic-btn" onclick="setTopic('mortgage rates today',this)">Mortgage rates</button>
+          <button class="topic-btn" onclick="setTopic('gold price and outlook',this)">Gold</button>
+          <button class="topic-btn" onclick="setTopic('stock market S&P 500 today',this)">Stocks</button>
+          <button class="topic-btn" onclick="setTopic('Federal Reserve interest rates',this)">Fed</button>
+          <button class="topic-btn" onclick="setTopic('Iran war ceasefire oil prices',this)">Iran / Oil</button>
+          <button class="topic-btn" onclick="setTopic('de-dollarization dollar decline China Yuan',this)">Dollar</button>
+          <button class="topic-btn" onclick="setTopic('AI tech stocks Nvidia',this)">AI stocks</button>
+          <button class="topic-btn" onclick="setTopic('real estate housing market 2026',this)">Real estate</button>
+        </div>
+        <div class="briefing-output empty" id="briefing-output">
+          Hit "Get Briefing" and Claude will search the web right now and write you a personalised market intelligence report — specific to your mortgage business, your investments, and your wealth-building strategy.
+        </div>
+        <div class="briefing-actions">
+          <button class="get-briefing-btn" id="briefing-btn" onclick="getBriefing()">
+            <span id="briefing-btn-icon">⚡</span> Get Briefing
+          </button>
+          <span class="briefing-cost">Each click searches the web + generates analysis</span>
+          <button class="copy-btn" id="copy-btn" style="display:none" onclick="copyBriefing()">Copy</button>
+        </div>
+      </div>
+
+      <!-- SUB-TABS -->
+      <div class="fed-tabs">
+        <button class="fed-tab active" onclick="fedTab('macro',this)">🌍 Big Picture</button>
+        <button class="fed-tab" onclick="fedTab('empire',this)">🏛️ End of Empire</button>
+        <button class="fed-tab" onclick="fedTab('transfer',this)">💰 $100T Transfer</button>
+        <button class="fed-tab" onclick="fedTab('china',this)">🐉 China's Move</button>
+        <button class="fed-tab" onclick="fedTab('dollar',this)">💵 De-dollarization</button>
+        <button class="fed-tab" onclick="fedTab('fed',this)">🏦 Fed &amp; Rates</button>
+        <button class="fed-tab" onclick="fedTab('gold',this)">🥇 Gold &amp; Real Assets</button>
+        <button class="fed-tab" onclick="fedTab('stocks',this)">📈 Stocks &amp; AI</button>
+        <button class="fed-tab" onclick="fedTab('play',this)">⚡ Your Playbook</button>
+      </div>
+
+      <!-- TAB: BIG PICTURE -->
+      <div id="fed-macro" class="fed-section active">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">The end of an era — what's actually happening right now</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">The Strait of Hormuz is closed — largest oil shock in history</div>
+            <div class="id">The US-Israel war with Iran (started Feb 2026) disrupted the Strait of Hormuz, which carries 20% of global oil AND 33% of global fertilizer. The World Bank called it the largest supply disruption in the history of the global oil market. Brent crude jumped to $105/barrel — up 44% since the war began. This is the reason inflation re-accelerated, your mortgage rates went back up, and the Fed stopped cutting.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">UAE exits OPEC — effective May 1, 2026</div>
+            <div class="id">This is historic. The UAE — one of OPEC's biggest producers — officially left the cartel. They're now pricing oil in multiple currencies, not just dollars, and cutting bilateral deals directly with China. This is a visible signal that the old dollar-oil-Treasury system is fracturing. Saudi Arabia reportedly needs $170/barrel to break even with current obligations but the paper market is suppressing that price. The OPEC cartel's grip is weakening fast.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib">
+            <div class="it">The Buffett Indicator is flashing red</div>
+            <div class="id">The "Adjusted Buffett Indicator" — market cap divided by GDP minus federal debt — is at levels seen only during the 2000 dot-com crash and the 2021 peak. The market is "pricing in perfection" while the real world has closed trade routes, depleted US military stockpiles (China controls rare earths needed to rebuild precision missile inventory), and a monetary system shifting under everyone's feet. This is not the time to be concentrated in one bet.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">The two lose-lose scenarios for the global economy</div>
+            <div class="id"><strong>Scenario A — Iran breaks:</strong> Oil spikes to $130–$170, global recession follows as consumer spending collapses under energy costs. <strong>Scenario B — Supply chains break first:</strong> Food and fertilizer shortages cause a massive inflation spike (fertilizer already up 31%, food prices surging globally), triggering stagflation and recession. Both scenarios end in pain. The question is only sequencing and severity.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">The 10-year Treasury at 4.4% is a geopolitical tripwire</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">Every time the 10-yr yield hits 4.4%, the US blinks</div>
+            <div class="id">This is one of the most important things in the video. The US government is trapped: it needs to keep bond yields low or the interest payments on its $35 trillion debt become unmanageable. Every time the 10-yr Treasury approaches 4.4%, markets panic, the bond market sells off, and the US government de-escalates military rhetoric to calm investors. Foreign policy is being dictated by bond yields.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">The trap: print or not print</div>
+            <div class="id">If the US prints money to stabilize the bond market and keep rates down — commodity inflation explodes further and the dollar loses more reserve status. If the US doesn't print — it can't afford its debt payments and risks a fiscal crisis. This is not a problem with an easy solution. This is why gold is at $4,500 and central banks are buying it aggressively. They're hedging against both outcomes.</div>
+          </div></div>
+        </div>
+      </div>
+
+      <!-- TAB: DOLLAR -->
+      <div id="fed-dollar" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">The petrodollar system is unwinding — what this means</div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">The 1974 petrodollar deal expired in 2024</div>
+            <div class="id">Since 1974, Saudi Arabia and Gulf states priced oil in US dollars and recycled those profits into US Treasury bonds. This created artificial global demand for dollars and Treasuries — it's why the US could run massive deficits without the dollar collapsing. That secret agreement expired in 2024. Without a "hard" anchor, the dollar's reserve status depends entirely on trust — and trust is eroding.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">The GCC's $2 trillion leverage play — dollar swap lines</div>
+            <div class="id">The Gulf Cooperation Council holds over $2 trillion in US assets. The UAE used the implicit threat of a "disorderly sale" of those assets — and a pivot to the Chinese Yuan — to force the US Treasury to provide "dollar swap lines." This gives the UAE cheap dollar liquidity without needing to hold Treasuries. Translation: the US paid ransom to prevent a bond market crash.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib">
+            <div class="it">De-dollarization is accelerating — the 2022 Russia moment</div>
+            <div class="id">When the US froze $300 billion of Russian sovereign assets in 2022, every central bank on earth got the memo: holding dollars is a political risk, not just a financial one. Since then, central banks have been rotating out of US Treasuries and into gold at the fastest pace in 50 years. The dollar's share of global reserves has dropped from ~71% in 2001 to the 50s% range today — and it's still falling.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">China's parallel financial system is being built right now</div>
+            <div class="id">China has secured direct oil trade deals with the UAE priced in Yuan. They're building alternative payment systems outside of SWIFT. More commodity deals — oil, minerals, food — are being priced in Yuan every month. China is the primary geopolitical winner of this transition because they produce physical goods and are positioning themselves as the alternative to the dollar system. This is a decade-long shift, not a quarter-long trade.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">What dollar weakness means for YOUR money</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Dollar weakness = hard assets go up</div><div class="id">Gold, oil, real estate, commodities — all priced in dollars. When the dollar weakens, these go up in dollar terms even if the underlying asset doesn't change. This is why owning real assets is your best hedge. You don't need to be a currency trader — you just need exposure.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Dollar weakness = international stocks outperform</div><div class="id">Non-US stocks outperformed the S&P by the widest margin since 2009 in 2025. When you earn in dollars but assets are globally diversified, dollar depreciation makes international holdings worth more in your currency. India, Southeast Asia, and parts of Europe are worth watching.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Dollar weakness = your debt gets cheaper in real terms</div><div class="id">If you have fixed-rate debt (mortgage, car loan) and inflation runs hot, you're repaying that debt with cheaper future dollars. This is actually in your favor as a borrower — as long as your income keeps up with or exceeds inflation. Your fixed mortgage rate is a hedge against inflation if your earning power grows.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: FED + RATES -->
+      <div id="fed-fed" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">Fed — April 28-29, 2026 (Powell's final meeting)</div>
+          <div style="padding:12px 15px;">
+            <div class="fed-box">
+              <div class="fed-date">Decision: Held at 3.50–3.75% — four dissents, most in 34 years</div>
+              <div class="fed-headline">Powell held firm against Trump pressure. Incoming chair Kevin Warsh faces a divided Fed.</div>
+              <div class="fed-body">The war pushed CPI to 3.3% — well above the 2% target — making cuts impossible right now. Warsh argues AI productivity will bring inflation down and has signaled support for cuts. Three sitting governors openly disagree. This is the most divided Fed in decades. Powell is staying on as governor (unusual) which limits Trump's ability to stack the board with rate-cut advocates.</div>
+              <div class="fed-signal" style="background:rgba(240,160,48,0.15);color:var(--amber)">⬤ On hold until inflation data improves — war is the key variable</div>
+            </div>
+            <div class="fed-box">
+              <div class="fed-date">What moves rates from here</div>
+              <div class="fed-body">
+                <strong style="color:var(--green);">Rates go DOWN if:</strong> Iran ceasefire announced (immediate bond rally), CPI cools below 3%, unemployment rises above 4.5%, 10-yr Treasury falls below 4%.<br><br>
+                <strong style="color:var(--coral);">Rates go UP if:</strong> Conflict escalates, oil hits $130+, PCE inflation reaches 4%, bond market sells off on fiscal fears.
+              </div>
+              <div class="fed-signal" style="background:rgba(29,186,126,0.15);color:var(--green)">⬤ Ceasefire = immediate rate drop. Set a news alert on Iran peace talks.</div>
+            </div>
+            <div class="fed-box">
+              <div class="fed-date">2026 FOMC schedule — remaining meetings</div>
+              <div class="fed-body">Jan ✓ &nbsp;·&nbsp; Mar ✓ &nbsp;·&nbsp; Apr ✓ &nbsp;·&nbsp; <strong style="color:var(--purple)">Jun 16–17 ← NEXT</strong> &nbsp;·&nbsp; Jul 28–29 &nbsp;·&nbsp; Sep 15–16 &nbsp;·&nbsp; Oct 27–28 &nbsp;·&nbsp; Dec 8–9</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch">Mortgage + housing — what it means for your business</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">30-yr fixed: 6.20% today (peaked 6.37% in March)</div><div class="id">Pulled back as ceasefire talks calmed the bond market. Experts forecast 6.20–6.40% through May. Freddie Mac's current average is ~6.30%. Below 6% is unlikely until the conflict resolves. 5% rates are 2–3 years away under most scenarios.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Home prices: flat to slightly down nationally</div><div class="id">0% national appreciation projected for 2026. Inventory up ~20% from lows. Sun Belt and West Coast seeing slight declines. This is a buyer's market finally emerging. Your pitch: "Prices have stabilized and there's room to negotiate — this is the window before rate cuts bring everyone back in."</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Refinance wave is loading — be positioned NOW</div><div class="id">Refinance applications already up 62% YoY from late 2025 rate dip. Everyone who closed at 6.5%+ is watching. When rates break below 5.9% — triggered by ceasefire — the wave hits. Your pipeline needs to be warm right now so you're first in the door.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: GOLD -->
+      <div id="fed-gold" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">Gold — the real asset rotation is here</div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">Current: ~$4,520/oz — down from $5,595 Jan 2026 peak</div>
+            <div class="id">Gold hit all-time highs in January 2026 — up 60% from 2024 and up 55% during 2025 alone. The Iran war paradoxically pushed gold DOWN from peak because energy inflation keeps real rates elevated, making bonds more competitive. But gold is still $4,500+. This pullback is happening inside one of the greatest gold bull markets in history.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">Why central banks won't stop buying</div>
+            <div class="id">Central banks are buying 585 tonnes/quarter — the fastest pace in 50 years. Why? Because the 2022 Russia asset freeze proved dollars are a political risk. Gold has no counterparty. No government can freeze it. No SWIFT system controls it. Every central bank on earth is now diversifying away from Treasuries and into gold. J.P. Morgan targets $5,055 by Q4 2026 and $6,000+ long-term.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib">
+            <div class="it">My honest read: this dip is a gift — $4,400–$4,600 is the zone</div>
+            <div class="id">If you want gold exposure, this pullback from $5,595 to $4,500 is a historically rare entry in a structural bull market. Not a trade — a multi-year hold. GLD (ETF, easiest) or IAU (lower expense ratio) or physical if you want to hold it. Gold in a Roth IRA via a gold ETF is one of the most tax-efficient plays available to you right now.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">Silver, rare earths, and commodities in the same theme</div>
+            <div class="id">Silver follows gold but with higher volatility. Rare earth metals are a different story — China controls 90%+ of processing capacity and the US military is running low on precision missiles because it can't replenish them without Chinese rare earths. This is a national security issue being financialized. Rare earth ETFs (REMX) are an aggressive but thematic play for the informed investor.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">The transition from paper assets to real assets</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">The macro thesis in one sentence</div><div class="id">The global economy is transitioning from a system backed by "paper assets" (US dollars, Treasuries, financial derivatives) to one backed by "real assets" — oil, gold, rare earths, food, and farmland. Nations that produce physical things win. Nations that primarily manage financial markets lose purchasing power.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">What this means for your investment strategy, Drako</div><div class="id">You don't need to go all-in on any one thing. But you DO need some exposure to real assets. Gold ETF + energy ETF + REITs as part of your portfolio creates a hedge against both inflation AND dollar weakness — which are the two biggest risks you face as a 1099 earner whose income is in dollars.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: STOCKS + AI -->
+      <div id="fed-stocks" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">Stock market — honest picture, not the headline</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib">
+            <div class="it">S&P 500 at ~6,840. Goldman targets 7,600 by year-end (+11%).</div>
+            <div class="id">The market rallied 13% from late-March lows — its best stretch since April 2020 — on ceasefire optimism and AI earnings. Goldman forecasts 12% EPS growth in 2026. If you're in index funds, you're capturing this. The bull market is not over, but it's aging and increasingly narrow.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">The AI trade is real — but dangerously concentrated</div>
+            <div class="id">AI is driving ~40% of S&P 500 earnings growth. Big tech is spending $670 billion on AI infrastructure in 2026. Goldman's AI data center basket is up 60% this year. BUT — market breadth is at its narrowest since the dot-com era. A handful of mega-cap tech stocks are carrying the entire index. If one or two of them disappoint, the index gets hit disproportionately hard.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">Valuation warning: P/E at 21x and Buffett Indicator at dot-com levels</div>
+            <div class="id">At 21x forward earnings, there is very little margin of safety. The equity risk premium (difference between stock earnings yield and 10-yr Treasury yield) is near zero — the lowest on record. You're being compensated almost nothing to take stock market risk over bonds. This doesn't mean sell everything, but it means don't add to expensive growth stocks with money you can't afford to lose.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib">
+            <div class="it">Where the smart money is looking in tech</div>
+            <div class="id">AI infrastructure (Nvidia, Pure Storage, AMD) — the picks-and-shovels. Healthcare + AI convergence — drug discovery being transformed, still cheap relative to tech. Small and mid-cap quality stocks — left behind in the mega-cap rally but positioned to recover. International equities — dollar weakness makes non-US assets worth more in USD terms.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">Currencies — the new battlefield</div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Dollar weakening is the trend — but not a collapse</div><div class="id">The DXY (dollar index) has been under pressure. Dollar weakening is good for US exporters, bad for US import prices (inflation). It's good for gold and commodities. It's good for international stock returns measured in USD. Dollar won't "collapse" — but its slow decline is a years-long headwind for purely dollar-denominated savings.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Yuan rising but not yet a reserve currency</div><div class="id">China is winning trade deals and building payment systems in Yuan, but Yuan still isn't freely convertible and China's financial system isn't fully open. The Yuan won't replace the dollar soon — but it will take a bigger share of global commodity trade. Watching China-Gulf energy deals is the leading indicator for this shift.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">What about crypto as a currency hedge?</div><div class="id">Bitcoin is being positioned by some as "digital gold" — a non-sovereign store of value in a de-dollarizing world. There's a real thesis there. But crypto remains highly volatile and correlates with risk assets during market stress. If you want currency diversification, gold first, then crypto as a small speculative position. Not the other way around.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: PLAYBOOK -->
+      <div id="fed-play" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">Investment playbook — ranked by conviction, May 2026</div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Gold — GLD / IAU ETF or physical <span class="conv-high">High conviction</span></div><div class="id">Buy the dip. $4,400–$4,600 is the entry zone. Central banks are loading up. Petrodollar is unwinding. Dollar weakening. This is the trade of the era for protection. Long-term hold, not a trade.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">S&P 500 index funds — VOO / SPY <span class="conv-high">Always on</span></div><div class="id">Dollar-cost average. Don't time the war news. Goldman's 7,600 target = 11% upside. Capture AI earnings growth passively without concentration risk. This is your foundation.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">AI infrastructure stocks — NVDA, Pure Storage, AMD <span class="conv-med">Medium-high</span></div><div class="id">Picks-and-shovels on the AI buildout. Less risky than pure software AI bets. $670B in AI capex this year means massive demand for their products. Pure Storage has 45% analyst upside target.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Energy stocks — XOM, CVX, XLE ETF <span class="conv-med">War play — watch exit</span></div><div class="id">Oil at $105 = energy companies printing cash. This is a conflict-driven trade. When the ceasefire hits, oil drops and you sell. Have an exit target in mind. Don't overstay this trade.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Real estate / REITs — VNQ <span class="conv-med">Building window</span></div><div class="id">Prices flat, inventory up 20%. This is the setup for a buying window in 2026–2027 when rates ease. REITs give you real estate exposure now at 6.2% rates without tying up a down payment. Physical property acquisition — start planning now, buy when rates drop.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--pink)"></div><div class="ib"><div class="it">International equities — VXUS, EEM <span class="conv-med">Underrated</span></div><div class="id">Non-US stocks beat the S&P by the widest margin since 2009 in 2025. Dollar weakness amplifies returns. India, Southeast Asia, parts of Europe. Cheap relative to US stocks. Diversification you're probably missing.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">TIPS / I-Bonds — inflation-protected bonds <span class="conv-high">Defensive</span></div><div class="id">CPI at 3.3% and rising. TIPS pay real yield above inflation. I-Bonds capped at $10K/year but risk-free. Best place for your 6-month emergency cash reserve right now — beats a savings account handily.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--text3)"></div><div class="ib"><div class="it">Bitcoin / Crypto <span class="conv-warn">High risk / speculative</span></div><div class="id">Real de-dollarization thesis behind it, but volatile and correlates with risk assets during stress. Only with money you can afford to lose. Gold first for the same macro thesis, crypto as small position after.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--text3)"></div><div class="ib"><div class="it">Rare earth ETF — REMX <span class="conv-warn">Aggressive / thematic</span></div><div class="id">China controls 90%+ of rare earth processing. US military depleting precision missile stockpiles. This is a national security crisis being financialized. High risk, but the thesis is real and few retail investors are positioned in it yet.</div></div></div>
+        </div>
+        <div class="card">
+          <div class="ch">What this means specifically for Drako — your action list</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">For your mortgage business: set a ceasefire alert NOW</div><div class="id">The moment Iran peace talks conclude, mortgage rates drop. That is your refinance wave. Your pipeline needs to be full before that happens. 30 calls a day isn't just a goal — it's preparation for the biggest wave this market will see in years.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">For your investments: own some gold before $5,000</div><div class="id">You don't need to go heavy. Even 5–10% of investable assets in GLD or IAU is meaningful inflation and dollar protection. Central banks and J.P. Morgan are both loading up. You're buying where institutional money has conviction.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">For your wealth structure: the LLC shields you from what's coming</div><div class="id">In a high-inflation environment, your deductions become more valuable — not less. Business expenses, home office, Solo 401(k) contributions, equipment — all reduce your taxable income in dollars that are losing purchasing power. Maximize every deduction now while the dollar still buys what it used to.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">For your content: this IS your content niche</div><div class="id">Most people your age have no idea any of this is happening. You explaining de-dollarization, the petrodollar, gold vs. the dollar, what war means for mortgages — in plain English on TikTok and Instagram — is a content category almost nobody in the creator space owns. You have the knowledge and the background. This is your niche waiting to be claimed.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: END OF EMPIRE (Kiyosaki) -->
+      <div id="fed-empire" class="fed-section">
+        <div style="background:rgba(240,160,48,0.08);border:1px solid rgba(240,160,48,0.25);border-radius:var(--rsm);padding:9px 14px;margin-bottom:12px;font-size:11px;color:var(--text3);">
+          📺 Source: Robert Kiyosaki — "Rich Dad Poor Dad" author. He is deliberately provocative and not a licensed financial advisor. His framework is useful for thinking about systemic risk, but his specific timing predictions (like 2026 collapse) should be taken as a lens, not a forecast. Use the concepts, not the prophecies.
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">The numbers that keep Kiyosaki up at night</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">$39 trillion on-balance sheet — $250 trillion off-balance sheet</div>
+            <div class="id">The official national debt is $39T. But when you add unfunded liabilities — Social Security, Medicare, Medicaid, pension obligations — the number balloons to an estimated $250 trillion. This is the debt that doesn't show up in headlines but will define the next 30 years of American fiscal policy. There is no mathematically honest way to pay this without either massive inflation, default, or radical spending cuts.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">$1 trillion every 100 days — the printing pace</div>
+            <div class="id">The US is adding approximately $1 trillion to its national debt every 100 days. To put that in scale: if you spent $1 per minute, it would take 32,500 years to spend $1 trillion. The US is doing that in 100 days. This is not sustainable. At some point the bond market stops accepting this — and when that happens, the adjustment is violent and fast.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib">
+            <div class="it">The average 401(k) is under $500,000 — a retirement crisis brewing</div>
+            <div class="id">The median American 401(k) is nowhere near enough to sustain a 20–30 year retirement in an inflationary environment. Most boomers are not financially prepared for the retirement they expect. This is why Kiyosaki argues that traditional retirement advice — "save in a 401k, buy mutual funds" — is systematically flawed for this era. The money loses purchasing power while it sits in paper assets.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">Kiyosaki's personal strategy: $1.2 billion in debt as a WEAPON</div>
+            <div class="id">Kiyosaki personally carries $1.2 billion in real estate debt. His logic: inflation erodes debt. If you borrow at fixed rates and inflation runs hot, you're paying back with cheaper future dollars. The bank takes the real loss. The asset (real estate) appreciates with inflation. The tenant pays the mortgage. This is the "rich dad" playbook — use debt as leverage on income-producing real assets, not to buy depreciating liabilities.</div>
+          </div></div>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">The "end of empire" historical parallel</div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">1956 Suez Crisis ended the British Empire — 2026 Hormuz mirrors it</div>
+            <div class="id">In 1956, Britain and France tried to retake the Suez Canal from Egypt. The US forced them to stand down. That moment publicly exposed that Britain could no longer project power without US financial backing — and the British Empire's dominance effectively ended. Kiyosaki draws a direct parallel: the US trying to control the Strait of Hormuz while being militarily stretched, financially depleted, and facing a rising China challenger mirrors 1956 almost exactly.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">The stock market setup: "yanked at the top"</div>
+            <div class="id">Kiyosaki's most alarming prediction: the market is being allowed to run to all-time highs specifically to give insiders an exit before a sharp reversal. Boomers with their life savings in 401(k)s — fully allocated to stocks at the top — get crushed and lose their retirement security. Whether you believe the conspiratorial framing or not, the mechanical risk is real: a highly concentrated, overvalued market + a generation of retirees forced to sell = painful.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">Kiyosaki's recommended assets — the honest filter</div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Gold + Silver ("God's money") <span class="conv-high">Broadly agreed on</span></div><div class="id">This aligns with central bank behavior, J.P. Morgan forecasts, and the de-dollarization thesis across all the videos. Gold at $4,400–4,600 is widely seen as a strong entry zone by mainstream analysts too. Silver is more volatile but has both monetary AND industrial demand (solar panels, EVs).</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Cash-flowing real estate — apartments + oil wells <span class="conv-high">Solid thesis</span></div><div class="id">Income-producing real assets that generate cash flow regardless of asset price. Inflation raises rents, protecting income. Fixed-rate debt gets eroded. This is the core strategy that has worked for real estate investors through every inflationary cycle. For you, Drako — start with 1–2 rental properties once rates ease. The setup is forming now.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--text3)"></div><div class="ib"><div class="it">Bitcoin + Ethereum <span class="conv-warn">Use with caution</span></div><div class="id">Kiyosaki is an enthusiastic crypto advocate. The de-dollarization thesis does give crypto a genuine role. But his conviction level on crypto timing has been wrong multiple times. Small position (2–5% of investable assets) as a speculative hedge — not a core holding.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: $100T WEALTH TRANSFER -->
+      <div id="fed-transfer" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">The $100 trillion great wealth transfer — happening right now</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib">
+            <div class="it">Over the next 20 years, $100 trillion changes hands</div>
+            <div class="id">Baby Boomers — the wealthiest generation in history — are beginning to die, retire, and downsize. Their assets will transfer on an unprecedented scale: Millennials receive $46T, Gen X gets $39T, Gen Z inherits $15T, and charities receive $18T. This is the largest single transfer of wealth in human history. It will reshape real estate, equities, healthcare, and consumption patterns for decades.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">Boomers own 40% of US housing — that inventory is coming</div>
+            <div class="id">Baby Boomers own approximately 40% of the US housing stock. As they pass or move to assisted living, that supply will hit the market over the next 10–20 years. This is deflationary for home prices in certain markets — particularly suburban single-family homes in aging regions. It may finally give first-time buyers the affordability they've been locked out of. For rental investors: watch which markets absorb this vs. which flood.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">The debt context: then vs. now</div>
+            <div class="id">Post-WWII (1945): Debt-to-GDP was 106% — but the US was the only intact industrial economy on earth and had explosive growth ahead. Today (2026): Debt-to-GDP is 125% and climbing, with no equivalent growth engine on the horizon and geopolitical headwinds on all sides. The comparison matters because Boomers built wealth in a fundamentally different economic era than the one their children are inheriting.</div>
+          </div></div>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">Investment sectors that benefit from the wealth transfer</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib">
+            <div class="it">Healthcare — XLV, AGNG ETFs <span class="conv-high">High conviction, decade-long</span></div>
+            <div class="id">The aging of the Boomer population is not a prediction — it's demographics. Demand for healthcare, medical devices, pharmaceuticals, assisted living, and long-term care will grow relentlessly for the next 20 years regardless of market conditions. XLV (Healthcare Select Sector ETF) and AGNG (Global Aging ETF) are two ways to own this megatrend. This is one of the highest-conviction long-term trades available.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib">
+            <div class="it">Dividend stocks — SCHD, VYM <span class="conv-high">Income + inflation protection</span></div>
+            <div class="id">As Boomers move from accumulation to distribution (needing income, not growth), demand for dividend-paying stocks rises. SCHD (Schwab US Dividend Equity ETF) and VYM (Vanguard High Dividend Yield ETF) give you exposure to quality companies that pay and grow dividends. In an inflationary environment, growing dividends = rising income. This is a core holding for wealth-building investors in your 20s and 30s.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">Broad market — VTI, SPY <span class="conv-med">Foundation layer</span></div>
+            <div class="id">VTI (Vanguard Total Stock Market) captures the entire US economy including small and mid-caps that often outperform during wealth transfer periods as younger generations build different businesses. This is your "don't overthink it" layer that captures economic growth across all sectors.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">Real estate in the right markets <span class="conv-med">Selective — location dependent</span></div>
+            <div class="id">Not all real estate benefits equally. Sun Belt markets with young population influx (Texas, Florida, Tennessee) will absorb Boomer liquidation and keep appreciating. Rust Belt suburban markets may face significant oversupply. Michigan is mixed — watch Sterling Heights and Metro Detroit specifically for rental demand from younger workers who can't afford to buy yet.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">What this means for Drako specifically</div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">You're in the right generation at the right time</div><div class="id">As a Millennial, you're in the generation receiving the largest share of the wealth transfer ($46T). But only those who are financially prepared — with income-producing assets, proper tax structure, and real estate exposure — will capture it. Everyone else will watch it pass them by through taxes, inflation, and poor financial planning.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Healthcare content is a massive opportunity for your creator brand</div><div class="id">Health and wellness content aimed at aging Boomers AND health-conscious Millennials is one of the largest content markets online. You're already building in this niche. The demographic tailwind behind it is $100 trillion of wealth and the most health-conscious generation in history entering their peak earning and spending years. Your content is positioned perfectly.</div></div></div>
+        </div>
+      </div>
+
+      <!-- TAB: CHINA'S MOVE -->
+      <div id="fed-china" class="fed-section">
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">China's strategic position — the numbers</div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">Dollar's share of global reserves: 71% (2000) → 56% (2025)</div>
+            <div class="id">The dollar's dominance is eroding in a straight line. 2000: 71% → 2010: 62% → 2020: 59% → 2025: 56%. If this trend continues linearly, the dollar falls below 50% of global reserves within the decade. No single currency replaces it — it's a multipolar shift, with gold, Yuan, and regional currencies all taking share. This is the slow-motion event that changes everything about how the dollar-denominated world works.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">China buys 90% of Iranian oil — in Yuan, below market</div>
+            <div class="id">China is buying Iranian oil at a steep discount in Yuan, bypassing US sanctions and SWIFT entirely. This does three things simultaneously: funds Iran's war effort, secures cheap energy for China's manufacturing base, and builds the Yuan's role as a commodity currency. Every barrel of oil traded outside the dollar system is another brick pulled from the petrodollar foundation.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">GDP growth: China ~4% vs US ~2% — the convergence math</div>
+            <div class="id">At current growth rates, China's GDP converges with and potentially surpasses the US within the decade. This matters for global investment flows — capital tends to follow growth. As institutional investors globally diversify away from a US-centric portfolio, emerging market ETFs and China-specific exposure become relevant hedges for sophisticated retail investors.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib">
+            <div class="it">BRICS expansion — building the alternative financial plumbing</div>
+            <div class="id">BRICS (Brazil, Russia, India, China, South Africa — now expanded to include UAE, Saudi Arabia, Egypt, Iran, and others) represents over 40% of global GDP and is building parallel payment systems designed to bypass SWIFT. These aren't theoretical — they're already processing real transactions. The US financial sanctions weapon is becoming less effective every year as more of the world opts into alternative systems.</div>
+          </div></div>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="ch">Investment hedges for a China-rising, dollar-declining world</div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib">
+            <div class="it">Copper — COPX ETF <span class="conv-high">Infrastructure megatrend</span></div>
+            <div class="id">Copper is the metal of electrification — EVs, power grids, AI data centers, renewable energy infrastructure. China is the world's largest consumer and the world's largest infrastructure builder. Global electrification requires an estimated 50% increase in copper production. Supply is constrained (mines take 10–15 years to develop). This is a decade-long demand story with a supply ceiling. COPX is the copper mining ETF.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">Uranium — NUKZ ETF <span class="conv-med">Energy race play</span></div>
+            <div class="id">Nuclear energy is experiencing a global renaissance as nations pursue energy independence and AI data centers demand enormous, reliable power. China is building more nuclear reactors than the rest of the world combined. The US, UK, France, and Japan are all extending existing plants and planning new ones. Uranium prices are still well below the levels needed to incentivize new mine supply. NUKZ is the uranium ETF.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--pink)"></div><div class="ib">
+            <div class="it">Emerging markets — VWO ETF <span class="conv-med">Dollar-decline hedge</span></div>
+            <div class="id">VWO (Vanguard Emerging Markets ETF) gives broad exposure to non-US, non-developed-world growth. India, Southeast Asia, Brazil, and others are benefiting from supply chain diversification away from China AND from dollar weakness (their assets look cheaper to international capital). In a multipolar world, pure US concentration is a risk.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib">
+            <div class="it">China directly — MCHI ETF <span class="conv-warn">High risk, geopolitical</span></div>
+            <div class="id">MCHI (iShares MSCI China ETF) gives direct China exposure. The thesis is real — China is a beneficiary of de-dollarization and has cheap valuations relative to the US. The risk is also real — US-China tensions, potential sanctions, Taiwan risk, and regulatory unpredictability make this a high-conviction, high-risk position. Small allocation if you believe the multipolar thesis.</div>
+          </div></div>
+        </div>
+        <div class="card">
+          <div class="ch">⚠ May 15, 2026 — The Fed reset event</div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib">
+            <div class="it">New Fed Chair + new debt strategy announced</div>
+            <div class="id">May 15, 2026 marks the formal transition of Fed leadership (Kevin Warsh replacing Powell) and the announcement of a new strategy to "shrink the debt crisis." Three separate video sources all converge on this date as significant. What's being proposed is some form of balance sheet restructuring, debt monetization framework, or yield curve control — all of which are technical ways of saying: we're going to manage this debt in a way that erodes its real value over time.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib">
+            <div class="it">The honest warning: you cannot fix this without pain</div>
+            <div class="id">There is no version of resolving a $39T+ debt crisis (let alone $250T in unfunded liabilities) that doesn't involve some combination of: higher inflation (erodes debt but destroys savings), financial repression (keeping rates below inflation, forcing savers to lose money in real terms), spending cuts (politically impossible at scale), or currency devaluation. The question is not whether there is pain — it's who absorbs it. Historically, the middle class absorbs it while those with hard assets and debt are protected.</div>
+          </div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib">
+            <div class="it">How to be on the RIGHT side of a debt reset</div>
+            <div class="id">Own real assets (gold, silver, real estate, commodities). Carry strategic fixed-rate debt on appreciating assets. Maximize tax-advantaged accounts (Solo 401k, Roth IRA) now before rules change. Diversify internationally. Build multiple income streams so no single policy change wipes you out. This is exactly the playbook you're already building, Drako — you're ahead of 95% of people your age just by knowing this is coming.</div>
+          </div></div>
+        </div>
+      </div>
+
+
+    <div id="p-wealth" class="panel">
+      <div class="g2">
+        <div class="card"><div class="ch">Income streams</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Active — mortgage commissions</div><div class="id">Your engine. 30 calls/day + Bonzo = systemized pipeline.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Semi-passive — web retainers + AI tools</div><div class="id">$100–$300/month per client. 10 clients = $2K/month, ~5 hrs of work.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Passive — content monetization</div><div class="id">Platform funds + brand deals. Compounds with consistency.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Passive — investments</div><div class="id">Index funds, REITs. Use deductions to free capital. Let compounding run.</div></div></div>
+        </div>
+        <div class="card"><div class="ch">Wealth protection structure</div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">LLC (operating)</div><div class="id">All brand, web, content income flows through. Separates liability, unlocks deductions.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">S-Corp election at ~$40K</div><div class="id">Reduces self-employment tax by $4K–$10K/year.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Revocable living trust</div><div class="id">Hold assets, avoid probate, protect privacy, transfer to loved ones smoothly.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAX -->
+    <div id="p-tax" class="panel">
+      <div class="g2">
+        <div class="card"><div class="ch">Deductions available now</div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Home office</div><div class="id">Dedicated workspace = deductible rent, utilities, internet.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Leads + software</div><div class="id">Bonzo, CRM, AI tools, ads — every dollar is a business expense.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Self-employed health insurance</div><div class="id">100% of premiums deductible as 1099.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">SEP-IRA / Solo 401(k)</div><div class="id">Up to $69K/year pre-tax. Biggest legal reduction available.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Mileage — 67¢/mile (2024)</div><div class="id">Every client meeting, networking run. Track with MileIQ.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Content creation equipment</div><div class="id">Camera, mic, ring light, editing software — deductible under creator LLC.</div></div></div>
+        </div>
+        <div class="card"><div class="ch">Structure roadmap</div>
+          <div class="ir"><div class="dot" style="background:var(--purple)"></div><div class="ib"><div class="it">Step 1 — Form LLC now</div><div class="id">Michigan LLC = $50 state fee. Use for all brand and web income immediately.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--blue)"></div><div class="ib"><div class="it">Step 2 — Business bank account</div><div class="id">Separate personal and business completely. Crucial for deductions.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--green)"></div><div class="ib"><div class="it">Step 3 — Revocable living trust</div><div class="id">Estate attorney drafts it. Hold your assets inside.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--amber)"></div><div class="ib"><div class="it">Step 4 — S-Corp election</div><div class="id">File Form 2553 when brand income hits $40K+.</div></div></div>
+          <div class="ir"><div class="dot" style="background:var(--coral)"></div><div class="ib"><div class="it">Step 5 — Solo 401(k)</div><div class="id">Open through Fidelity or Vanguard. Max contributions.</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<script>
+// ── CLOCK ──
+function tick(){
+  const n=new Date(),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  let h=n.getHours(),m=n.getMinutes(),s=n.getSeconds(),ap=h>=12?'PM':'AM';
+  h=h%12||12;
+  document.getElementById('clock').textContent=h+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+' '+ap;
+  document.getElementById('clock-date').textContent=days[n.getDay()]+', '+months[n.getMonth()]+' '+n.getDate();
+}
+tick();setInterval(tick,1000);
+
+// ── NAV ──
+const titles={calendar:'Calendar',schedule:'Schedule',routine:'Morning routine',week:'Week view',goals:'Goals tracker',fitness:'Fitness',life:'Life balance',bonzo:'Bonzo',sidehustle:'Side hustle',content:'Content creator',fed:'Fed + markets',wealth:'Wealth plan',tax:'Tax strategy'};
+function nav(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  el.classList.add('active');
+  document.getElementById('page-title').textContent=titles[id];
+}
+
+// ── EVENTS ──
+const eventColors={travel:'e-travel',family:'e-family',friends:'e-friends',work:'e-work',fitness:'e-fitness',reminder:'e-reminder'};
+const eventDotColors={travel:'var(--blue)',family:'var(--amber)',friends:'var(--pink)',work:'var(--purple)',fitness:'var(--green)',reminder:'var(--coral)',holiday:'var(--coral)'};
+
+// US Holidays
+function getHolidays(year){
+  const h=[];
+  const add=(m,d,name)=>h.push({date:`${year}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,name,type:'holiday'});
+  add(0,1,"New Year's Day");add(1,14,"Valentine's Day");add(6,4,"Independence Day");
+  add(9,31,"Halloween");add(10,11,"Veterans Day");add(11,25,"Christmas");add(11,31,"New Year's Eve");
+  add(0,nthWeekday(year,0,1,3),"MLK Day");add(1,nthWeekday(year,1,1,3),"Presidents' Day");
+  add(4,lastWeekday(year,4,1),"Memorial Day");add(8,nthWeekday(year,8,1,1),"Labor Day");
+  add(9,nthWeekday(year,9,1,2),"Columbus Day");add(10,nthWeekday(year,10,4,4),"Thanksgiving");
+  add(4,nthWeekday(year,4,0,2),"Mother's Day");add(5,nthWeekday(year,5,0,3),"Father's Day");
+  return h;
+}
+function nthWeekday(y,m,dow,n){let d=1,count=0;while(true){if(new Date(y,m,d).getDay()===dow){count++;if(count===n)return d;}d++;}}
+function lastWeekday(y,m,dow){const last=new Date(y,m+1,0).getDate();let d=last;while(new Date(y,m,d).getDay()!==dow)d--;return d;}
+
+// helper: all dates between dateFrom and dateTo inclusive
+function dateRange(from,to){
+  const dates=[];
+  const cur=new Date(from+'T00:00:00');
+  const end=new Date(to+'T00:00:00');
+  while(cur<=end){
+    dates.push(cur.toISOString().slice(0,10));
+    cur.setDate(cur.getDate()+1);
+  }
+  return dates;
+}
+
+// ── LOCALSTORAGE ──
+const STORAGE_KEY='drakoHQ_events_v2';
+const NEXTID_KEY='drakoHQ_nextId_v2';
+function saveToStorage(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(userEvents));localStorage.setItem(NEXTID_KEY,String(nextId));}
+  catch(err){console.warn('Storage save failed',err);}
+}
+function loadFromStorage(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed=JSON.parse(raw);
+      return parsed.map(e=>({...e,
+        dateFrom:e.dateFrom||e.date||'',
+        dateTo:e.dateTo||e.dateFrom||e.date||'',
+        timeStart:e.timeStart||e.time||'',
+        timeEnd:e.timeEnd||'',
+        recurring:false
+      }));
+    }
+  }catch(err){console.warn('Storage load failed',err);}
+  return null;
+}
+
+// ── RECURRING SCHEDULE ──
+// DOW: 0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat
+const RECURRING_DEFS=[
+  {dow:[1,2,3,4,5], name:'Work block',      type:'work',    timeStart:'08:30',timeEnd:'17:00'},
+  {dow:[1,2,3,4,5], name:'Side hustle',     type:'hustle',  timeStart:'10:30',timeEnd:'11:00'},
+  {dow:[1,3,5,6],   name:'Workout',         type:'fitness', timeStart:'07:00',timeEnd:'08:00'},
+  {dow:[2,4,6],     name:'Content creation',type:'content', timeStart:'19:00',timeEnd:'20:30'},
+  {dow:[2],         name:'Nephews time',    type:'family',  timeStart:'17:00',timeEnd:'20:00'},
+  {dow:[6],         name:'Family time',     type:'family',  timeStart:'13:00',timeEnd:'17:00'},
+  {dow:[5],altWeeks:true,name:'Friends night',type:'friends',timeStart:'18:00',timeEnd:'23:00'},
+];
+function getWeekNumber(d){
+  const j=new Date(d.getFullYear(),0,1);
+  return Math.ceil(((d-j)/86400000+j.getDay()+1)/7);
+}
+function generateRecurring(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const start=new Date(today);start.setMonth(start.getMonth()-1);
+  const end=new Date(today);end.setMonth(end.getMonth()+5);
+  const out=[];let rid=10000;
+  const cur=new Date(start);
+  while(cur<=end){
+    const dow=cur.getDay(),wk=getWeekNumber(cur);
+    RECURRING_DEFS.forEach(def=>{
+      if(!def.dow.includes(dow))return;
+      if(def.altWeeks&&wk%2!==0)return;
+      const ds=cur.toISOString().slice(0,10);
+      out.push({id:rid++,name:def.name,dateFrom:ds,dateTo:ds,
+        timeStart:def.timeStart||'',timeEnd:def.timeEnd||'',
+        type:def.type,remind:1,notes:'',recurring:true});
+    });
+    cur.setDate(cur.getDate()+1);
+  }
+  return out;
+}
+
+// ── INIT ──
+let nextId=100;
+let userEvents=loadFromStorage();
+if(!userEvents){
+  // First-run seed events
+  userEvents=[
+    {id:1,name:'Fed meeting',dateFrom:'2025-05-06',dateTo:'2025-05-07',timeStart:'',timeEnd:'',type:'work',remind:1,notes:'FOMC — watch for rate decision',recurring:false},
+    {id:2,name:'Vacation — TBD',dateFrom:'2025-07-04',dateTo:'2025-07-11',timeStart:'',timeEnd:'',type:'travel',remind:7,notes:'Add destination and details',recurring:false},
+  ];
+  nextId=10;
+  saveToStorage();
+}
+let events=[...userEvents,...generateRecurring()];
+
+// ── HELPERS ──
+function dateRange(from,to){
+  const dates=[];
+  const cur=new Date(from+'T00:00:00'),end=new Date(to+'T00:00:00');
+  while(cur<=end){dates.push(cur.toISOString().slice(0,10));cur.setDate(cur.getDate()+1);}
+  return dates;
+}
+function buildTimeStr(h,m,ap){
+  if(!h)return '';
+  const hr24=(ap==='PM'&&h!=='12')?parseInt(h)+12:(ap==='AM'&&h==='12')?0:parseInt(h);
+  return String(hr24).padStart(2,'0')+':'+m;
+}
+function fmtTime(t){
+  if(!t)return '';
+  const[h,m]=t.split(':');const hr=parseInt(h);
+  return(hr%12||12)+':'+m+(hr>=12?' PM':' AM');
+}
+const fmtDate=ds=>{
+  const p=ds.split('-');
+  return['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][parseInt(p[1])-1]+' '+parseInt(p[2])+', '+p[0];
+};
+function fmtDateRange(from,to){return from===to?fmtDate(from):fmtDate(from)+' – '+fmtDate(to);}
+
+// ── MODAL ──
+function syncToDate(){
+  const f=document.getElementById('ev-date-from').value;
+  const t=document.getElementById('ev-date-to').value;
+  if(!t||t<f)document.getElementById('ev-date-to').value=f;
+}
+function openModal(dateStr){
+  const d=new Date(dateStr+'T00:00:00');
+  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('modal-date-label').textContent=
+    days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();
+  document.getElementById('ev-date-from').value=dateStr;
+  document.getElementById('ev-date-to').value=dateStr;
+  document.getElementById('ev-name').value='';
+  document.getElementById('ev-notes').value='';
+  document.getElementById('ev-hour').value='';
+  document.getElementById('ev-min').value='00';
+  document.getElementById('ev-ampm').value='AM';
+  document.getElementById('ev-hour-end').value='';
+  document.getElementById('ev-min-end').value='00';
+  document.getElementById('ev-ampm-end').value='PM';
+  document.getElementById('event-modal').classList.add('open');
+  setTimeout(()=>document.getElementById('ev-name').focus(),100);
+}
+function closeModal(){document.getElementById('event-modal').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('event-modal'))closeModal();}
+
+function saveEvent(){
+  const name=document.getElementById('ev-name').value.trim();
+  const dateFrom=document.getElementById('ev-date-from').value;
+  let dateTo=document.getElementById('ev-date-to').value;
+  if(!dateTo||dateTo<dateFrom)dateTo=dateFrom;
+  if(!name||!dateFrom){alert('Please enter a name and date.');return;}
+  const newEv={
+    id:nextId++,name,dateFrom,dateTo,
+    timeStart:buildTimeStr(document.getElementById('ev-hour').value,
+      document.getElementById('ev-min').value,document.getElementById('ev-ampm').value),
+    timeEnd:buildTimeStr(document.getElementById('ev-hour-end').value,
+      document.getElementById('ev-min-end').value,document.getElementById('ev-ampm-end').value),
+    type:document.getElementById('ev-type').value,
+    remind:parseInt(document.getElementById('ev-remind').value),
+    notes:document.getElementById('ev-notes').value.trim(),
+    recurring:false
+  };
+  userEvents.push(newEv);
+  userEvents.sort((a,b)=>a.dateFrom.localeCompare(b.dateFrom));
+  saveToStorage();
+  events=[...userEvents,...generateRecurring()];
+  closeModal();renderCalendar();renderEventList();checkReminders();
+}
+
+function deleteEvent(id){
+  userEvents=userEvents.filter(e=>e.id!==id);
+  saveToStorage();
+  events=[...userEvents,...generateRecurring()];
+  renderCalendar();renderEventList();
+}
+
+// ── EVENT LISTS ──
+function renderEventList(){
+  const today=new Date();today.setHours(0,0,0,0);
+  const upcoming=userEvents.filter(e=>new Date(e.dateTo+'T00:00:00')>=today).slice(0,12);
+  const travelEvs=userEvents.filter(e=>e.type==='travel');
+
+  const evCard=e=>{
+    const multi=e.dateFrom!==e.dateTo;
+    const ts=e.timeStart?fmtTime(e.timeStart):'';
+    const te=e.timeEnd?fmtTime(e.timeEnd):'';
+    const timeStr=ts?(ts+(te?' – '+te:'')):'';
+    return`<div class="ev-item">
+      <div class="ev-dot" style="background:${eventDotColors[e.type]||'var(--text3)'}"></div>
+      <div class="ev-body">
+        <div class="ev-name">${e.name}${timeStr?` <span style="color:var(--text3);font-size:10px;">${timeStr}</span>`:''}<span class="ev-reminder">🔔 ${e.remind}d</span></div>
+        <div class="ev-meta">${fmtDateRange(e.dateFrom,e.dateTo)}${multi?` <span style="color:var(--blue);font-size:10px;">(${dateRange(e.dateFrom,e.dateTo).length}d)</span>`:''}${e.notes?' · '+e.notes:''}</div>
+      </div>
+      <div class="ev-del" onclick="deleteEvent(${e.id})">✕</div>
+    </div>`;
+  };
+
+  document.getElementById('event-list').innerHTML=upcoming.length
+    ?upcoming.map(evCard).join('')
+    :'<div style="padding:10px 0;font-size:11px;color:var(--text3);">No upcoming events. Double-click a date to add one.</div>';
+
+  document.getElementById('travel-list').innerHTML=travelEvs.length
+    ?travelEvs.map(evCard).join('')
+    :'<div style="padding:10px 0;font-size:11px;color:var(--text3);">No travel planned yet.</div>';
+
+  // 14-day reminders — user events only
+  const in14=new Date();in14.setDate(in14.getDate()+14);in14.setHours(23,59,59);
+  const w14=userEvents.filter(e=>{
+    const df=new Date(e.dateFrom+'T00:00:00');
+    return df>=today&&df<=in14;
+  });
+  document.getElementById('rw-count').textContent=w14.length;
+  document.getElementById('reminders-list').innerHTML=w14.length?w14.map(e=>{
+    const dd=Math.round((new Date(e.dateFrom+'T00:00:00')-today)/(1000*60*60*24));
+    const cls=dd===0?'days-today':dd<=2?'days-soon':dd<=5?'days-near':'days-far';
+    const lbl=dd===0?'Today':dd===1?'Tomorrow':'In '+dd+'d';
+    return`<div class="rw-item">
+      <div class="rw-top">
+        <div class="rw-dot" style="background:${eventDotColors[e.type]||'var(--text3)'}"></div>
+        <div class="rw-name">${e.name}</div>
+        <span class="rw-days ${cls}">${lbl}</span>
+        <div class="rw-del" onclick="deleteEvent(${e.id})">✕</div>
+      </div>
+      <div class="rw-meta">${fmtDateRange(e.dateFrom,e.dateTo)}${e.timeStart?' · '+fmtTime(e.timeStart):''}${e.notes?' · '+e.notes:''}</div>
+    </div>`;
+  }).join(''):'<div style="padding:12px 14px;font-size:11px;color:var(--text3);">Clear for the next 2 weeks.</div>';
+
+  const next=upcoming[0];
+  document.getElementById('next-event-pill').textContent=
+    next?'Next: '+next.name+' · '+fmtDate(next.dateFrom):'No upcoming events';
+}
+
+// ── CALENDAR RENDER ──
+let calYear=new Date().getFullYear(),calMonth=new Date().getMonth();
+function changeMonth(d){
+  calMonth+=d;
+  if(calMonth>11){calMonth=0;calYear++;}
+  if(calMonth<0){calMonth=11;calYear--;}
+  renderCalendar();
+}
+
+function renderCalendar(){
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-label').textContent=months[calMonth]+' '+calYear;
+  const today=new Date();
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const daysInPrev=new Date(calYear,calMonth,0).getDate();
+  const allHolidays=[...getHolidays(calYear),...getHolidays(calYear-1),...getHolidays(calYear+1)];
+
+  // build date → events map
+  const eventMap={};
+  events.forEach(ev=>{
+    dateRange(ev.dateFrom,ev.dateTo).forEach(ds=>{
+      if(!eventMap[ds])eventMap[ds]=[];
+      eventMap[ds].push(ev);
+    });
+  });
+
+  let html='<div class="cal-dow">SUN</div><div class="cal-dow">MON</div><div class="cal-dow">TUE</div><div class="cal-dow">WED</div><div class="cal-dow">THU</div><div class="cal-dow">FRI</div><div class="cal-dow">SAT</div>';
+
+  for(let i=firstDay-1;i>=0;i--)
+    html+=`<div class="cal-cell other"><div class="cal-num">${daysInPrev-i}</div></div>`;
+
+  for(let d=1;d<=daysInMonth;d++){
+    const isToday=today.getFullYear()===calYear&&today.getMonth()===calMonth&&today.getDate()===d;
+    const ds=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    const dayEvs=eventMap[ds]||[];
+    const dayHols=allHolidays.filter(h=>h.date===ds);
+
+    const numHtml=isToday
+      ?`<div class="cal-num" style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--purple);color:white;font-weight:700;font-size:12px;">${d}</div>`
+      :`<div class="cal-num">${d}</div>`;
+
+    // order: holidays → user events → recurring
+    const sorted=[
+      ...dayHols,
+      ...dayEvs.filter(e=>!e.recurring),
+      ...dayEvs.filter(e=>e.recurring)
+    ];
+
+    const evHtml=sorted.map(ev=>{
+      if(ev.type==='holiday')return`<div class="cal-event e-holiday">✦ ${ev.name}</div>`;
+      const isStart=ev.dateFrom===ds,isEnd=ev.dateTo===ds,multi=ev.dateFrom!==ev.dateTo;
+      const label=multi?(isStart?'▶ ':isEnd?'■ ':'— ')+ev.name:ev.name;
+      const cls=eventColors[ev.type]||'e-reminder';
+      const tip=ev.recurring?ev.name+(ev.timeStart?' · '+fmtTime(ev.timeStart):''):ev.name;
+      const del=!ev.recurring
+        ?` ondblclick="event.stopPropagation();if(confirm('Delete: ${ev.name.replace(/'/g,"\\'")}?'))deleteEvent(${ev.id})" title="Dbl-click to delete · ${tip}"`
+        :` title="${tip}"`;
+      return`<div class="cal-event ${cls}"${del}>${label}</div>`;
+    }).join('');
+
+    html+=`<div class="cal-cell ${isToday?'today':''} ${dayHols.length?'holiday-day':''}" ondblclick="openModal('${ds}')" title="Double-click to add event">${numHtml}${evHtml}</div>`;
+  }
+
+  const remaining=(7-(firstDay+daysInMonth)%7)%7;
+  for(let i=1;i<=remaining;i++)
+    html+=`<div class="cal-cell other"><div class="cal-num">${i}</div></div>`;
+
+  document.getElementById('cal-grid').innerHTML=html;
+}
+renderCalendar();renderEventList();
+
+// ── REMINDERS ──
+function checkReminders(){
+  const today=new Date();today.setHours(0,0,0,0);
+  events.forEach(e=>{
+    const evDate=new Date(e.dateFrom+'T00:00:00');
+    const diffDays=Math.round((evDate-today)/(1000*60*60*24));
+    if(diffDays===e.remind||diffDays===0){showToast(e,diffDays);}
+  });
+}
+function showToast(ev,days){
+  const t=document.createElement('div');t.className='toast';
+  t.innerHTML=`<div class="toast-close" onclick="this.parentNode.remove()">✕</div>
+    <div class="toast-title">🔔 ${days===0?'Today':'In '+days+' day'+(days>1?'s':'')}: ${ev.name}</div>
+    <div class="toast-body">${ev.notes||ev.date}</div>`;
+  document.body.appendChild(t);setTimeout(()=>{if(t.parentNode)t.remove();},6000);
+}
+setTimeout(checkReminders,1500);
+
+// ── WEEK VIEW ──
+function buildWeek(){
+  const today=new Date(),dow=today.getDay(),monday=new Date(today);monday.setDate(today.getDate()-(dow===0?6:dow-1));
+  const evMap={0:[{c:'var(--purple)',t:'Work'},{c:'var(--coral)',t:'Hustle'},{c:'var(--green)',t:'Gym'}],1:[{c:'var(--purple)',t:'Work'},{c:'var(--coral)',t:'Hustle'},{c:'var(--amber)',t:'Nephews'}],2:[{c:'var(--purple)',t:'Work'},{c:'var(--coral)',t:'Hustle'},{c:'var(--green)',t:'Gym'},{c:'var(--amber)',t:'Nephews'}],3:[{c:'var(--purple)',t:'Work'},{c:'var(--coral)',t:'Hustle'},{c:'var(--green)',t:'Gym'}],4:[{c:'var(--purple)',t:'Work'},{c:'var(--coral)',t:'Hustle'},{c:'var(--pink)',t:'Friends'}],5:[{c:'var(--green)',t:'Gym'},{c:'var(--amber)',t:'Family'}],6:[{c:'var(--amber)',t:'Rest'}]};
+  let html='';
+  for(let i=0;i<7;i++){const d=new Date(monday);d.setDate(monday.getDate()+i);const isT=d.toDateString()===today.toDateString();const evs=evMap[i]||[];html+=`<div class="cal-cell" style="min-height:80px;${isT?'background:rgba(124,111,255,0.08);':''}"><div class="cal-num" style="color:${isT?'var(--purple)':'var(--text3)'};font-weight:${isT?700:500}">${d.getDate()}</div>${evs.map(e=>`<div class="cal-event" style="background:${e.c}22;color:${e.c}">${e.t}</div>`).join('')}</div>`;}
+  document.getElementById('week-cells').innerHTML=html;
+}
+buildWeek();
+
+// ── ROUTINE ──
+const routines=[{n:'No snooze — feet on floor',s:'Phone placed across room last night',t:'7:30'},{n:'16oz water',s:'Clears brain fog, kicks metabolism',t:'7:31'},{n:'Cold water on face',s:'Instant alertness trigger',t:'7:33'},{n:'10-min movement',s:'Pushups, stretch, or walk — no excuses',t:'7:35'},{n:'Shower + dress intentionally',s:'How you present changes how you perform',t:'7:50'},{n:'Eat real food — protein first',s:'Keeps focus sharp through your call blocks',t:'8:00'},{n:'5-min prayer or gratitude',s:'Grounds you before a heavy lead day',t:'8:10'},{n:'10-min learning',s:'Market news, book, or podcast',t:'8:15'},{n:'Market pulse — 2 min',s:'10-yr treasury + rate check',t:'8:35'},{n:'Pick top 3 leads',s:'Decide before you sit. Never in the chair.',t:'8:40'}];
+let checked=new Array(routines.length).fill(false);
+function renderRoutine(){
+  const done=checked.filter(Boolean).length;
+  document.getElementById('r-done').textContent=done+'/'+routines.length;
+  document.getElementById('top-done').textContent=done+'/'+routines.length;
+  document.getElementById('routine-card').innerHTML='<div class="ch">7:30 to 8:30 AM — launch sequence</div>'+routines.map((r,i)=>`<div class="row ${checked[i]?'done':''}" onclick="toggleH(${i})"><div class="ck">${checked[i]?'✓':''}</div><div class="rb"><div class="rn">${r.n}</div><div class="rs">${r.s}</div></div><div class="rt">${r.t} AM</div></div>`).join('');
+}
+function toggleH(i){checked[i]=!checked[i];renderRoutine();}
+function resetRoutine(){checked=new Array(routines.length).fill(false);renderRoutine();}
+renderRoutine();
+
+// ── GOALS ──
+const goals=[{n:'Mortgage calls made (30/day)',c:8,t:30,col:'var(--purple)'},{n:'Appointments booked',c:1,t:3,col:'var(--green)'},{n:'Applications submitted',c:2,t:5,col:'var(--blue)'},{n:'Side hustle sessions',c:2,t:5,col:'var(--coral)'},{n:'Workout sessions',c:1,t:4,col:'var(--green)'},{n:'Morning routine completed',c:3,t:5,col:'var(--green)'},{n:'Nephews time (days)',c:1,t:2,col:'var(--amber)'},{n:'Content pieces filmed',c:1,t:3,col:'var(--pink)'},{n:'Weekly broadcast sent',c:0,t:1,col:'var(--amber)'}];
+document.getElementById('goals-list').innerHTML=goals.map(g=>{const p=Math.min(100,Math.round((g.c/g.t)*100));return`<div class="gr"><div class="gt"><span class="gn">${g.n}</span><span class="gv">${g.c} / ${g.t}</span></div><div class="bar"><div class="bf" style="width:${p}%;background:${g.col}"></div></div></div>`;}).join('');
+
+// ── WORKOUT ──
+const wo=[{day:'Monday',type:'Upper body',detail:'Chest, shoulders, triceps · 45 min',isWo:true},{day:'Tuesday',type:'Cardio / HIIT',detail:'30–45 min run or interval training',isWo:true},{day:'Wednesday',type:'Lower body',detail:'Legs, glutes, core · 45 min',isWo:true},{day:'Thursday',type:'Rest or walk',detail:'Light movement, family time',isWo:false},{day:'Friday',type:'Full body',detail:'Compound lifts · 50 min',isWo:true},{day:'Saturday',type:'Outdoor / fun',detail:'Hike, bike, sports with nephews',isWo:false},{day:'Sunday',type:'Rest',detail:'Recovery, meal prep, reflection',isWo:false}];
+let woDone=new Array(wo.length).fill(false);
+function renderWo(){
+  const done=woDone.filter((v,i)=>v&&wo[i].isWo).length;
+  document.getElementById('wo-done').textContent=done+'/4';
+  document.getElementById('wo-list').innerHTML=wo.map((w,i)=>`<div class="wo-day" ${w.isWo?`onclick="toggleWo(${i})" style="cursor:pointer"`:''}><div class="wo-label">${w.day}</div><div class="wo-detail">${w.type} — ${w.detail}</div>${w.isWo?`<div class="wo-badge" style="background:${woDone[i]?'rgba(29,186,126,0.2)':'rgba(85,85,106,0.15)'};color:${woDone[i]?'var(--green)':'var(--text3)'}">${woDone[i]?'✓ Done':'Log it'}</div>`:''}</div>`).join('');
+}
+function toggleWo(i){woDone[i]=!woDone[i];renderWo();}
+renderWo();
+
+// ── BONZO COUNTERS ──
+const counters={calls:{val:0,target:30,elId:'calls-val',barId:'calls-bar',pctId:'calls-pct'},appts:{val:0,target:3,elId:'appts-val',barId:'appts-bar',pctId:'appts-pct'},followups:{val:0,target:20,elId:'followups-val'},broadcast:{val:0,target:1,elId:'broadcast-val'}};
+function adj(key,d){const c=counters[key];c.val=Math.max(0,c.val+d);document.getElementById(c.elId).textContent=c.val;if(c.barId){const p=Math.min(100,Math.round((c.val/c.target)*100));document.getElementById(c.barId).style.width=p+'%';document.getElementById(c.pctId).textContent=p+'%';}}
+
+// ── BROADCAST TEMPLATES ──
+const broadcasts=[
+  `Hey [First Name] — quick market update for you this week.\n\nRates are still in the mid-6s, but here's what matters: the 10-year Treasury yield just moved, and that's your real signal.\n\nBuyers who get pre-approved NOW are positioned to lock the moment rates dip. The competition will be fierce when that happens.\n\nAre you in a position to move if the right home comes up? Let's chat — 5 minutes could save you thousands.\n\n— Mark`,
+  `[First Name], one thing I'm watching closely this week:\n\nThe Fed meets May 6–7. Any hint of a rate cut = refinance wave incoming.\n\nIf you bought in the last 2 years and haven't looked at your rate recently, now is the time to get ready. I can run your numbers in under 10 minutes.\n\nReply "rates" and I'll send you a personalized breakdown.\n\n— Mark, your loan officer`,
+  `Quick note for you, [First Name]:\n\nHome prices in our area are up, inventory is still tight, and buyers who wait are paying more every month they sit out.\n\nI ran numbers this week — locking in now vs. waiting 6 months = $15K–$40K difference depending on your price range.\n\nWant me to run your specific scenario? Takes 10 minutes. Zero pressure.\n\n— Drako`
+];
+let bcastIdx=0;
+function refreshBroadcast(){bcastIdx=(bcastIdx+1)%broadcasts.length;document.getElementById('broadcast-template').textContent=broadcasts[bcastIdx];}
+document.getElementById('broadcast-template').textContent=broadcasts[0];
+
+// ── FED SUB-TABS ──
+function fedTab(id,el){
+  document.querySelectorAll('.fed-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.fed-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('fed-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── LIVE AI BRIEFING ──
+let currentTopic='general';
+let lastBriefingText='';
+
+function setTopic(topic, el){
+  currentTopic=topic;
+  document.querySelectorAll('.topic-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function renderMarkdown(text){
+  // Convert ## headers and **bold** to HTML
+  return text
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\n\n/g,'</p><p>')
+    .replace(/^(?!<[hp])/gm,'')
+    .replace(/^/,'<p>')
+    .replace(/$/,'</p>')
+    .replace(/<p><h2>/g,'<h2>')
+    .replace(/<\/h2><\/p>/g,'</h2>')
+    .replace(/<p><\/p>/g,'')
+    .replace(/<p>\s*<\/p>/g,'');
+}
+
+async function getBriefing(){
+  const btn=document.getElementById('briefing-btn');
+  const icon=document.getElementById('briefing-btn-icon');
+  const badge=document.getElementById('briefing-badge');
+  const output=document.getElementById('briefing-output');
+  const meta=document.getElementById('briefing-meta');
+  const copyBtn=document.getElementById('copy-btn');
+
+  btn.disabled=true;
+  icon.textContent='⟳';
+  icon.className='spin';
+  badge.textContent='Searching...';
+  badge.className='briefing-badge loading';
+  output.className='briefing-output';
+  output.innerHTML='<span style="color:var(--text3);font-size:12px;">🔍 Searching the web for current market data...<br>✍️ Writing your personalised briefing...<br><span style="color:var(--text3);font-size:11px;">(This takes 10–20 seconds)</span></span>';
+  copyBtn.style.display='none';
+
+  try{
+    const res=await fetch('/api/briefing',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({topic:currentTopic})
+    });
+
+    if(!res.ok){
+      const err=await res.json();
+      throw new Error(err.error||'Request failed');
+    }
+
+    const data=await res.json();
+    lastBriefingText=data.briefing||'';
+
+    output.className='briefing-output';
+    output.innerHTML=renderMarkdown(lastBriefingText);
+
+    const now=new Date();
+    const timeStr=now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    badge.textContent='Live · '+timeStr;
+    badge.className='briefing-badge';
+    meta.textContent='Last updated '+timeStr+' · Powered by Claude + live web search';
+    copyBtn.style.display='block';
+
+  }catch(err){
+    badge.textContent='Error';
+    badge.className='briefing-badge error';
+    output.className='briefing-output';
+    output.innerHTML=`<span style="color:var(--coral);font-size:12px;">⚠ ${err.message}<br><br><span style="color:var(--text3);">Make sure ANTHROPIC_API_KEY is set in Netlify → Site settings → Environment variables → Add variable.</span></span>`;
+  }finally{
+    btn.disabled=false;
+    icon.textContent='⚡';
+    icon.className='';
+  }
+}
+
+function copyBriefing(){
+  if(!lastBriefingText)return;
+  navigator.clipboard.writeText(lastBriefingText).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='Copied!';
+    setTimeout(()=>btn.textContent='Copy',2000);
+  });
+}
+
+</script>
+</body>
+</html>
