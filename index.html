@@ -1621,7 +1621,7 @@ async function getBriefing(){
   copyBtn.style.display='none';
 
   try{
-    const res=await fetch('/api/briefing',{
+    const res=await fetch('/.netlify/functions/briefing',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({topic:currentTopic})
