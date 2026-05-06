@@ -1122,7 +1122,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);fon
         </div>
       </div>
 
+    </div><!-- /p-fed -->
 
+    <!-- WEALTH -->
     <div id="p-wealth" class="panel">
       <div class="g2">
         <div class="card"><div class="ch">Income streams</div>
@@ -1634,6 +1636,27 @@ async function getBriefing(){
 
     const data=await res.json();
     lastBriefingText=data.briefing||'';
+
+    // Update live ticker stats if we got real data back
+    if(data.liveData){
+      const ld=data.liveData;
+      if(ld.gold) document.querySelectorAll('.stat').forEach(s=>{
+        if(s.querySelector('.sl')?.textContent==='Gold (XAU)'){
+          s.querySelector('.sv').textContent='$'+parseFloat(ld.gold).toLocaleString();
+          s.querySelector('.sv').style.color=ld.goldChange>=0?'var(--green)':'var(--coral)';
+        }
+        if(s.querySelector('.sl')?.textContent==='30-yr mortgage'&&ld.mortgageRate)
+          s.querySelector('.sv').textContent=ld.mortgageRate+'%';
+        if(s.querySelector('.sl')?.textContent==='Fed funds rate'&&ld.fedRate)
+          s.querySelector('.sv').textContent=ld.fedRate+'%';
+        if(s.querySelector('.sl')?.textContent==='S&P 500'&&ld.spx){
+          s.querySelector('.sv').textContent=parseFloat(ld.spx).toLocaleString();
+          s.querySelector('.sv').style.color=ld.spxChange>=0?'var(--green)':'var(--coral)';
+        }
+        if(s.querySelector('.sl')?.textContent==='Oil (Brent)'&&ld.oil)
+          s.querySelector('.sv').textContent='$'+parseFloat(ld.oil).toFixed(0)+'/bl';
+      });
+    }
 
     output.className='briefing-output';
     output.innerHTML=renderMarkdown(lastBriefingText);
